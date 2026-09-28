@@ -689,7 +689,49 @@
       answer.textContent =
         "Nexafo AI recibió: " + message;
     }
+/* ARRASTRAR VENTANAS */
 
+document.querySelectorAll(".window").forEach(function(windowElement) {
+
+  const header = windowElement.querySelector(".window-header");
+
+  let dragging = false;
+  let offsetX = 0;
+  let offsetY = 0;
+
+  header.addEventListener("mousedown", function(event) {
+
+    if (event.target.tagName === "BUTTON") return;
+
+    dragging = true;
+
+    const rect = windowElement.getBoundingClientRect();
+
+    offsetX = event.clientX - rect.left;
+    offsetY = event.clientY - rect.top;
+
+    windowElement.style.transform = "none";
+    windowElement.style.zIndex = getHighestZIndex() + 1;
+  });
+
+  document.addEventListener("mousemove", function(event) {
+
+    if (!dragging) return;
+
+    windowElement.style.left =
+      (event.clientX - offsetX) + "px";
+
+    windowElement.style.top =
+      (event.clientY - offsetY) + "px";
+  });
+
+  document.addEventListener("mouseup", function() {
+
+    dragging = false;
+
+  });
+
+});
   </script>
 
 </body>
