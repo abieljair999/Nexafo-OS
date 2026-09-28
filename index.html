@@ -16,133 +16,110 @@
     body {
       min-height: 100vh;
       overflow: hidden;
-      background: linear-gradient(135deg, #0b1020, #182848);
       color: white;
+      background: linear-gradient(135deg, #080c18, #17233d);
     }
 
-    /* Escritorio */
     .desktop {
-      min-height: 100vh;
-      padding: 25px;
+      width: 100%;
+      height: 100vh;
       position: relative;
+      padding: 22px;
     }
 
-    .top {
+    /* CABECERA */
+
+    .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .logo {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: bold;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
     }
 
-    .time {
-      font-size: 16px;
+    #clock {
       opacity: 0.8;
     }
 
-    /* Aplicaciones */
+    /* MENSAJE */
+
+    .welcome {
+      margin-top: 45px;
+    }
+
+    .welcome h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    .welcome p {
+      opacity: 0.7;
+      font-size: 17px;
+    }
+
+    /* ICONOS */
+
     .apps {
+      margin-top: 45px;
       display: grid;
       grid-template-columns: repeat(4, 90px);
-      gap: 25px;
-      margin-top: 50px;
+      gap: 22px;
     }
 
     .app {
       width: 90px;
       height: 100px;
-      border: none;
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 18px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.08);
       color: white;
       cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
       transition: 0.2s;
     }
 
     .app:hover {
-      transform: translateY(-5px);
-      background: rgba(255,255,255,0.18);
+      transform: translateY(-4px);
+      background: rgba(255,255,255,0.16);
     }
 
-    .icon {
+    .app-icon {
       font-size: 32px;
+      display: block;
+      margin-bottom: 8px;
     }
 
-    .app span:last-child {
-      font-size: 13px;
-    }
+    /* DOCK */
 
-    /* Asistente */
-    .assistant {
-      position: absolute;
-      right: 25px;
-      bottom: 90px;
-      width: 320px;
-      background: rgba(10,15,30,0.92);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 20px;
-      padding: 20px;
-      display: none;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-    }
-
-    .assistant h2 {
-      margin-bottom: 10px;
-    }
-
-    .assistant p {
-      opacity: 0.8;
-      margin-bottom: 15px;
-    }
-
-    .assistant input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      outline: none;
-      margin-bottom: 10px;
-    }
-
-    .assistant button {
-      width: 100%;
-      padding: 11px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    /* Barra inferior */
     .dock {
       position: absolute;
-      bottom: 20px;
+      bottom: 18px;
       left: 50%;
       transform: translateX(-50%);
+
       display: flex;
       gap: 10px;
-      padding: 10px 15px;
+
+      padding: 10px 14px;
       border-radius: 20px;
+
       background: rgba(0,0,0,0.35);
-      backdrop-filter: blur(15px);
+      backdrop-filter: blur(18px);
     }
 
     .dock button {
-      width: 50px;
-      height: 50px;
+      width: 48px;
+      height: 48px;
+
       border: none;
-      border-radius: 15px;
+      border-radius: 14px;
+
       background: rgba(255,255,255,0.1);
       color: white;
+
       font-size: 22px;
       cursor: pointer;
     }
@@ -151,23 +128,158 @@
       background: rgba(255,255,255,0.2);
     }
 
-    /* Mensaje */
-    .message {
-      margin-top: 35px;
-      max-width: 600px;
+    /* VENTANAS */
+
+    .window {
+      position: absolute;
+
+      width: 520px;
+      max-width: calc(100vw - 30px);
+
+      height: 360px;
+      max-height: calc(100vh - 130px);
+
+      left: 50%;
+      top: 50%;
+
+      transform: translate(-50%, -50%);
+
+      background: rgba(15,20,35,0.97);
+
+      border: 1px solid rgba(255,255,255,0.15);
+
+      border-radius: 16px;
+
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+
+      display: none;
+
+      overflow: hidden;
+
+      z-index: 10;
     }
 
-    .message h1 {
-      font-size: 42px;
-      margin-bottom: 10px;
+    /* BARRA DE VENTANA */
+
+    .window-header {
+      height: 45px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 12px;
+
+      background: rgba(255,255,255,0.06);
+
+      cursor: grab;
     }
 
-    .message p {
-      font-size: 18px;
-      opacity: 0.7;
+    .window-title {
+      font-weight: bold;
+      font-size: 14px;
     }
+
+    .window-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .window-controls button {
+      width: 30px;
+      height: 28px;
+
+      border: none;
+      border-radius: 7px;
+
+      background: rgba(255,255,255,0.08);
+
+      color: white;
+
+      cursor: pointer;
+    }
+
+    .window-controls button:hover {
+      background: rgba(255,255,255,0.18);
+    }
+
+    /* CONTENIDO */
+
+    .window-content {
+      padding: 25px;
+      height: calc(100% - 45px);
+      overflow: auto;
+    }
+
+    .window-content h2 {
+      margin-bottom: 12px;
+    }
+
+    .window-content p {
+      opacity: 0.75;
+      line-height: 1.5;
+    }
+
+    /* NEXAFO AI */
+
+    .ai-input {
+      margin-top: 20px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .ai-input input {
+      flex: 1;
+      padding: 12px;
+
+      border: none;
+      border-radius: 10px;
+
+      outline: none;
+    }
+
+    .ai-input button {
+      padding: 12px 16px;
+
+      border: none;
+      border-radius: 10px;
+
+      cursor: pointer;
+    }
+
+    #aiAnswer {
+      margin-top: 18px;
+      padding: 12px;
+
+      border-radius: 10px;
+
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* MAXIMIZADA */
+
+    .window.maximized {
+      width: calc(100vw - 30px);
+      height: calc(100vh - 100px);
+
+      left: 15px;
+      top: 15px;
+
+      transform: none;
+    }
+
+    /* MÓVIL */
 
     @media (max-width: 600px) {
+
+      .desktop {
+        padding: 18px;
+      }
+
+      .welcome h1 {
+        font-size: 30px;
+      }
+
       .apps {
         grid-template-columns: repeat(3, 80px);
         gap: 15px;
@@ -177,14 +289,13 @@
         width: 80px;
       }
 
-      .assistant {
-        left: 15px;
-        right: 15px;
-        width: auto;
+      .window {
+        width: calc(100vw - 20px);
+        height: calc(100vh - 110px);
       }
 
-      .message h1 {
-        font-size: 32px;
+      .dock {
+        bottom: 10px;
       }
     }
   </style>
@@ -194,117 +305,392 @@
 
   <main class="desktop">
 
-    <div class="top">
-      <div class="logo">NEXAFO</div>
-      <div class="time" id="time">00:00</div>
-    </div>
+    <!-- CABECERA -->
 
-    <section class="message">
+    <header class="topbar">
+      <div class="logo">NEXAFO</div>
+      <div id="clock">00:00</div>
+    </header>
+
+
+    <!-- ESCRITORIO -->
+
+    <section class="welcome">
       <h1>Bienvenido a Nexafo OS</h1>
-      <p>Tu espacio digital. Inteligente, adaptable y diseñado para ti.</p>
+
+      <p>
+        Un espacio digital inteligente, adaptable y construido para evolucionar.
+      </p>
     </section>
+
+
+    <!-- APLICACIONES -->
 
     <section class="apps">
 
-      <button class="app" onclick="openAssistant()">
-        <span class="icon">◉</span>
-        <span>Nexafo AI</span>
+      <button class="app" onclick="openWindow('aiWindow')">
+        <span class="app-icon">◉</span>
+        Nexafo AI
       </button>
 
-      <button class="app" onclick="showMessage('Archivos')">
-        <span class="icon">□</span>
-        <span>Archivos</span>
+      <button class="app" onclick="openWindow('filesWindow')">
+        <span class="app-icon">□</span>
+        Archivos
       </button>
 
-      <button class="app" onclick="showMessage('Navegador')">
-        <span class="icon">◌</span>
-        <span>Navegador</span>
+      <button class="app" onclick="openWindow('browserWindow')">
+        <span class="app-icon">◌</span>
+        Navegador
       </button>
 
-      <button class="app" onclick="showMessage('Configuración')">
-        <span class="icon">⚙</span>
-        <span>Ajustes</span>
+      <button class="app" onclick="openWindow('settingsWindow')">
+        <span class="app-icon">⚙</span>
+        Ajustes
       </button>
 
     </section>
 
-    <div class="assistant" id="assistant">
-      <h2>Nexafo AI</h2>
-      <p>Asistente inteligente de Nexafo OS.</p>
 
-      <input
-        id="question"
-        type="text"
-        placeholder="Escribe algo..."
-      >
+    <!-- NEXAFO AI -->
 
-      <button onclick="askAI()">Enviar</button>
+    <section class="window" id="aiWindow">
 
-      <p id="answer"></p>
-    </div>
+      <div class="window-header">
+
+        <span class="window-title">
+          Nexafo AI
+        </span>
+
+        <div class="window-controls">
+
+          <button onclick="minimizeWindow('aiWindow')">
+            −
+          </button>
+
+          <button onclick="maximizeWindow('aiWindow')">
+            □
+          </button>
+
+          <button onclick="closeWindow('aiWindow')">
+            ×
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="window-content">
+
+        <h2>Asistente Nexafo</h2>
+
+        <p>
+          Esta es la primera versión del asistente.
+          Más adelante conectaremos el sistema con una IA real.
+        </p>
+
+        <div class="ai-input">
+
+          <input
+            id="aiInput"
+            type="text"
+            placeholder="Escribe algo..."
+          >
+
+          <button onclick="askAI()">
+            Enviar
+          </button>
+
+        </div>
+
+        <div id="aiAnswer">
+          Esperando mensaje...
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ARCHIVOS -->
+
+    <section class="window" id="filesWindow">
+
+      <div class="window-header">
+
+        <span class="window-title">
+          Archivos
+        </span>
+
+        <div class="window-controls">
+
+          <button onclick="minimizeWindow('filesWindow')">
+            −
+          </button>
+
+          <button onclick="maximizeWindow('filesWindow')">
+            □
+          </button>
+
+          <button onclick="closeWindow('filesWindow')">
+            ×
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="window-content">
+
+        <h2>Archivos</h2>
+
+        <p>
+          El administrador de archivos de Nexafo OS
+          se desarrollará en una próxima etapa.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- NAVEGADOR -->
+
+    <section class="window" id="browserWindow">
+
+      <div class="window-header">
+
+        <span class="window-title">
+          Navegador
+        </span>
+
+        <div class="window-controls">
+
+          <button onclick="minimizeWindow('browserWindow')">
+            −
+          </button>
+
+          <button onclick="maximizeWindow('browserWindow')">
+            □
+          </button>
+
+          <button onclick="closeWindow('browserWindow')">
+            ×
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="window-content">
+
+        <h2>Navegador Nexafo</h2>
+
+        <p>
+          Aquí construiremos posteriormente
+          el navegador integrado de Nexafo OS.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- AJUSTES -->
+
+    <section class="window" id="settingsWindow">
+
+      <div class="window-header">
+
+        <span class="window-title">
+          Ajustes
+        </span>
+
+        <div class="window-controls">
+
+          <button onclick="minimizeWindow('settingsWindow')">
+            −
+          </button>
+
+          <button onclick="maximizeWindow('settingsWindow')">
+            □
+          </button>
+
+          <button onclick="closeWindow('settingsWindow')">
+            ×
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="window-content">
+
+        <h2>Ajustes de Nexafo OS</h2>
+
+        <p>
+          Aquí podremos configurar posteriormente
+          apariencia, privacidad, IA, sistema y otras funciones.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- DOCK -->
 
     <nav class="dock">
-      <button onclick="openAssistant()">◉</button>
-      <button onclick="showMessage('Inicio')">⌂</button>
-      <button onclick="showMessage('Configuración')">⚙</button>
+
+      <button onclick="openWindow('aiWindow')">
+        ◉
+      </button>
+
+      <button onclick="closeAllWindows()">
+        ⌂
+      </button>
+
+      <button onclick="openWindow('settingsWindow')">
+        ⚙
+      </button>
+
     </nav>
 
   </main>
 
+
   <script>
 
-    // Reloj
-    function updateTime() {
+    /* RELOJ */
+
+    function updateClock() {
+
       const now = new Date();
 
-      const hours = String(now.getHours()).padStart(2, "0");
-      const minutes = String(now.getMinutes()).padStart(2, "0");
+      const hours =
+        String(now.getHours()).padStart(2, "0");
 
-      document.getElementById("time").textContent =
+      const minutes =
+        String(now.getMinutes()).padStart(2, "0");
+
+      document.getElementById("clock").textContent =
         hours + ":" + minutes;
     }
 
-    setInterval(updateTime, 1000);
-    updateTime();
+    setInterval(updateClock, 1000);
+
+    updateClock();
 
 
-    // Abrir asistente
-    function openAssistant() {
-      const assistant = document.getElementById("assistant");
+    /* ABRIR VENTANA */
 
-      if (assistant.style.display === "block") {
-        assistant.style.display = "none";
-      } else {
-        assistant.style.display = "block";
-      }
+    function openWindow(id) {
+
+      const windowElement =
+        document.getElementById(id);
+
+      windowElement.style.display = "block";
+
+      windowElement.style.zIndex =
+        getHighestZIndex() + 1;
     }
 
 
-    // Aplicaciones
-    function showMessage(app) {
-      alert(app + " estará disponible en una próxima versión de Nexafo OS.");
+    /* CERRAR */
+
+    function closeWindow(id) {
+
+      document.getElementById(id).style.display =
+        "none";
     }
 
 
-    // Asistente básico
+    /* MINIMIZAR */
+
+    function minimizeWindow(id) {
+
+      document.getElementById(id).style.display =
+        "none";
+    }
+
+
+    /* MAXIMIZAR */
+
+    function maximizeWindow(id) {
+
+      const windowElement =
+        document.getElementById(id);
+
+      windowElement.classList.toggle("maximized");
+    }
+
+
+    /* CERRAR TODAS */
+
+    function closeAllWindows() {
+
+      const windows =
+        document.querySelectorAll(".window");
+
+      windows.forEach(function(windowElement) {
+
+        windowElement.style.display = "none";
+
+      });
+    }
+
+
+    /* ORDEN DE VENTANAS */
+
+    function getHighestZIndex() {
+
+      const windows =
+        document.querySelectorAll(".window");
+
+      let highest = 10;
+
+      windows.forEach(function(windowElement) {
+
+        const z =
+          parseInt(
+            window.getComputedStyle(windowElement).zIndex
+          );
+
+        if (z > highest) {
+          highest = z;
+        }
+
+      });
+
+      return highest;
+    }
+
+
+    /* NEXAFO AI */
+
     function askAI() {
 
-      const question =
-        document.getElementById("question").value.trim();
+      const input =
+        document.getElementById("aiInput");
 
       const answer =
-        document.getElementById("answer");
+        document.getElementById("aiAnswer");
 
-      if (question === "") {
-        answer.textContent = "Escribe algo primero.";
+      const message =
+        input.value.trim();
+
+      if (!message) {
+
+        answer.textContent =
+          "Escribe un mensaje primero.";
+
         return;
       }
 
       answer.textContent =
-        "Nexafo AI recibió tu mensaje: " + question;
+        "Nexafo AI recibió: " + message;
     }
 
   </script>
 
 </body>
-  </html>
+            </html>
