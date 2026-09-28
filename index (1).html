@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Nexofa OS 0.1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#f4f3fb;--fg:#17152b;--card:#fff;--ac:#4b3fd0;--mut:#6b6885;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#12111f;--fg:#ecebf7;--card:#1e1c33;--ac:#8c82ff;--mut:#9c99b8}}
+:root[data-theme=dark]{--bg:#12111f;--fg:#ecebf7;--card:#1e1c33;--ac:#8c82ff;--mut:#9c99b8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px system-ui,sans-serif;max-width:520px;margin:auto;min-height:100vh;padding:16px 16px 84px}
+h1{font-size:14px;letter-spacing:.3em;color:var(--ac);margin:0}.clock{font-size:48px;font-weight:300;margin:8px 0 0}.date{color:var(--mut);margin:0 0 16px}
+.card{background:var(--card);border-radius:16px;padding:14px;margin-bottom:12px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.app{background:var(--card);border:0;border-radius:16px;padding:16px 4px;color:var(--fg);font-size:14px}.app.off{opacity:.3}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;max-width:520px;margin:auto;background:var(--card);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;border:0;background:none;color:var(--mut);padding:12px 0;font-size:13px}nav button.on{color:var(--ac);font-weight:700}
+input,select,button.pri{width:100%;padding:12px;border-radius:12px;border:1px solid var(--mut);background:var(--bg);color:var(--fg);font-size:16px;margin:6px 0}
+button.pri{background:var(--ac);color:#fff;border:0}.badge{display:inline-block;padding:2px 8px;border-radius:99px;background:var(--ac);color:#fff;font-size:12px}
+label{display:flex;justify-content:space-between;align-items:center;padding:8px 0}.mut{color:var(--mut);font-size:13px}.hide{display:none}
+</style></head><body>
+<h1>NEXOFA</h1><div class="clock" id="clock"></div><p class="date" id="date"></p>
+<div class="card"><b id="aiStat"></b></div>
+<section id="home"><div class="card"><b id="modeName">Modo normal</b><div class="mut" id="modeInfo">Sin sesión activa</div></div><div class="grid" id="apps"></div><p class="mut" id="msg"></p></section>
+<section id="ai" class="hide"><div class="card"><b>IA de Nexofa</b><input id="q" placeholder="Escribe una consulta"><button class="pri" id="ask">Enviar</button><div id="ans" class="mut"></div></div></section>
+<section id="purpose" class="hide"><div class="card"><b>Modo Propósito</b>
+<select id="pm"><option value="study">Estudio</option><option value="work">Trabajo</option><option value="rest">Descanso</option><option value="free">Libre</option></select>
+<input id="pmin" type="number" value="25" min="1" max="480" aria-label="Minutos">
+<button class="pri" id="pstart">Iniciar</button><button class="pri" id="pstop">Volver al modo normal</button><div class="mut" id="pstats"></div></div></section>
+<section id="settings" class="hide"><div class="card"><b>Ajustes</b>
+<label>Modo de IA<select id="aiMode" style="width:50%"><option value="auto">Automático</option><option value="local">Solo local</option><option value="cloud">Nube</option></select></label>
+<label>Permitir nube<input type="checkbox" id="allowCloud" style="width:auto"></label>
+<label>Consentir datos sensibles (redactados)<input type="checkbox" id="cloudConsent" style="width:auto"></label>
+<label>Conectado<input type="checkbox" id="online" style="width:auto"></label>
+<label>Proxy de IA (https)<input id="proxy" placeholder="https://tu-proxy/ai" style="width:55%"></label><button class="pri" id="proxyBtn">Conectar proxy</button><p class="mut" id="proxyMsg">La clave de la IA nunca va en la app: vive en el servidor del proxy.</p></div>
+<div class="card"><b>Registro</b><div class="mut" id="log"></div></div></section>
+<nav><button data-p="home" class="on">Home</button><button data-p="ai">IA</button><button data-p="purpose">Propósito</button><button data-p="settings">Ajustes</button></nav>
+<script>/* Nexofa OS 0.1 prototype core. Runs in browser and Node. No API keys, no network by default. */
+(function (root) {
+  'use strict';
+
+  class EventBus {
+    constructor() { this.h = {}; this.log = []; }
+    on(e, f) { (this.h[e] = this.h[e] || []).push(f); }
+    emit(e, d) {
+      this.log.push({ t: Date.now(), e, d });
+      if (this.log.length > 200) this.log.shift();
+      (this.h[e] || []).forEach(f => {
+        try { f(d); } catch (err) { if (e !== 'error') this.emit('error', { msg: String(err.message) }); }
+      });
+    }
+  }
+
+  class Config {
+    constructor(bus) {
+      this.bus = bus;
+      this.v = { aiMode: 'auto', allowCloud: true, cloudConsent: false, online: true };
+    }
+    get(k) { return this.v[k]; }
+    set(k, val) {
+      if (!(k in this.v)) throw new Error('Unknown setting: ' + k);
+      if (k === 'aiMode' && !['auto', 'local', 'cloud'].includes(val)) throw new Error('Invalid aiMode');
+      if (k !== 'aiMode' && typeof val !== 'boolean') throw new Error('Expected boolean for ' + k);
+      this.v[k] = val;
+      this.bus.emit('config', { k, val });
+    }
+  }
+
+  // TODO / NOT PRODUCTION READY: regex heuristics only. Real classification needs a vetted approach.
+  class PrivacyFilter {
+    classify(text) {
+      const kinds = [];
+      if (/[\w.+-]+@[\w-]+\.[\w.]+/.test(text)) kinds.push('email');
+      if (/\b\d{13,19}\b/.test(text.replace(/[\s-]/g, ''))) kinds.push('card-like');
+      if (/\+?\d[\d\s-]{8,}\d/.test(text)) kinds.push('phone-like');
+      return { sensitive: kinds.length > 0, kinds };
+    }
+    redact(text) {
+      return text
+        .replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, '[EMAIL]')
+        .replace(/\+?\d[\d\s-]{8,}\d/g, '[NUM]');
+    }
+  }
+
+  // Interface: providers expose name, available and handle(req).
+  class AIProvider {
+    get name() { throw new Error('not implemented'); }
+    get available() { return false; }
+    async handle() { throw new Error('not implemented'); }
+  }
+
+  // MOCK. NOT A REAL AI. Disabled unless enableMock is true (tests/dev only).
+  class LocalAIProvider extends AIProvider {
+    constructor(enableMock) { super(); this.isMock = true; this.enabled = !!enableMock; this.maxChars = 120; }
+    get name() { return 'local-MOCK'; }
+    get available() { return this.enabled; }
+    async handle(req) { return { text: '[MOCK - not real AI] ' + req.text.slice(0, 60), provider: 'local' }; }
+  }
+
+  class AIError extends Error { constructor(code) { super(code); this.code = code; } }
+  const AI_ERRORS = {
+    not_configured: 'IA no configurada en el servidor (falta la clave)',
+    timeout: 'La IA tardó demasiado (timeout)',
+    network_error: 'No se pudo conectar con el proxy',
+    upstream_auth: 'El proveedor rechazó la clave (401/403)',
+    upstream_rate_limited: 'Límite del proveedor alcanzado (429)',
+    rate_limited: 'Demasiadas solicitudes al proxy (429)',
+    upstream_error: 'Error del proveedor (5xx)',
+    upstream_unreachable: 'El proxy no pudo alcanzar al proveedor',
+    upstream_timeout: 'El proveedor tardó demasiado',
+    upstream_invalid: 'Respuesta inválida del proveedor',
+    invalid_response: 'Respuesta inválida del proxy',
+    empty_response: 'La IA devolvió una respuesta vacía',
+    invalid_text: 'Consulta inválida o demasiado larga (máx. 4000)'
+  };
+
+  // Real cloud provider. No credentials here: transport is a proxy (HttpProxyTransport) or platform sampling.
+  class CloudAIProvider extends AIProvider {
+    constructor(transport) { super(); this.transport = transport || null; }
+    get name() { return 'cloud'; }
+    get available() { return !!this.transport; }
+    async handle(req) {
+      if (!this.transport) throw new AIError('not_configured');
+      const text = await this.transport(req.text);
+      if (typeof text !== 'string' || !text.trim()) throw new AIError('empty_response');
+      return { text, provider: 'cloud' };
+    }
+  }
+
+  // Client transport to the proxy: https (or localhost) only, hard timeout, typed errors. Never logs request text.
+  function HttpProxyTransport(url, fetchFn, timeoutMs) {
+    const u = new URL(url);
+    if (u.protocol !== 'https:' && !['localhost', '127.0.0.1'].includes(u.hostname)) throw new Error('Proxy must use https');
+    const f = fetchFn || (typeof fetch !== 'undefined' ? fetch : null);
+    if (!f) throw new Error('fetch unavailable');
+    const ms = timeoutMs || 30000;
+    const fn = async (text) => {
+      const ctl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      const timer = setTimeout(() => ctl && ctl.abort(), ms);
+      let res, data = null;
+      try {
+        res = await f(u.href, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text }), signal: ctl && ctl.signal });
+        try { data = await res.json(); } catch (e2) { if (e2 && e2.name === 'AbortError') throw e2; data = null; }
+      } catch (e) {
+        throw new AIError(e && e.name === 'AbortError' ? 'timeout' : 'network_error');
+      } finally { clearTimeout(timer); }
+      if (!res.ok) throw new AIError((data && data.error) || 'proxy_http_' + res.status);
+      if (!data || typeof data.text !== 'string' || !data.text.trim()) throw new AIError('invalid_response');
+      fn.lastMeta = { id: data.id, model: data.model };
+      return data.text;
+    };
+    fn.lastMeta = null;
+    return fn;
+  }
+
+  class AIRouter {
+    constructor(local, cloud, privacy, config, bus) { Object.assign(this, { local, cloud, privacy, config, bus }); }
+    status() { return { local: this.local.available ? 'MOCK' : 'off', cloud: this.cloud.available ? 'ready' : 'not_configured' }; }
+    async route(req) {
+      if (!req || typeof req.text !== 'string' || !req.text.trim()) throw new Error('Empty request');
+      const res = (status, note) => ({ status, text: null, provider: null, cloud: false, redacted: false, note });
+      const mode = this.config.get('aiMode');
+      const fitsLocal = this.local.available && req.text.length <= this.local.maxChars;
+      if (mode === 'local' || (mode === 'auto' && fitsLocal)) {
+        return this.local.available ? this._run(this.local, req, false, false) : res('not_configured', 'local-unavailable');
+      }
+      if (!this.config.get('allowCloud')) return res('not_configured', 'cloud-disabled');
+      if (!this.config.get('online')) return res('not_configured', 'offline');
+      if (!this.cloud.available) return res('not_configured', 'cloud-not-configured');
+      const c = this.privacy.classify(req.text);
+      if (c.sensitive && !this.config.get('cloudConsent')) return res('blocked', 'sensitive-blocked');
+      const text = c.sensitive ? this.privacy.redact(req.text) : req.text;
+      this.bus.emit('ai:cloud', { redacted: c.sensitive, kinds: c.kinds });
+      return this._run(this.cloud, { text }, true, c.sensitive);
+    }
+    async _run(p, req, cloud, redacted) {
+      try {
+        const r = await p.handle(req);
+        return { status: cloud ? 'cloud' : 'local', text: r.text, provider: r.provider, cloud, redacted, note: null };
+      } catch (e) {
+        this.bus.emit('error', { msg: String(e.message) });
+        return { status: 'error', text: null, provider: p.name, cloud, redacted, note: null, error: e.code || e.message };
+      }
+    }
+  }
+
+  const PRESETS = {
+    study: ['notes', 'calc', 'clock'],
+    work: ['notes', 'calc', 'clock', 'ai'],
+    rest: ['clock'],
+    free: null // null = everything allowed
+  };
+
+  class PurposeMode {
+    constructor(bus, now) { this.bus = bus; this.now = now || Date.now; this.session = null; this.history = []; }
+    start(name, minutes) {
+      if (!(name in PRESETS)) throw new Error('Unknown mode: ' + name);
+      if (!Number.isFinite(minutes) || minutes <= 0 || minutes > 480) throw new Error('Invalid duration');
+      this.session = { name, minutes, start: this.now() };
+      this.bus.emit('purpose:start', { name, minutes });
+    }
+    // Recovery: stop never fails and never touches user data.
+    stop() {
+      if (!this.session) return null;
+      const s = this.session;
+      const done = { name: s.name, planned: s.minutes, actual: Math.round((this.now() - s.start) / 60000) };
+      this.history.push(done);
+      this.session = null;
+      this.bus.emit('purpose:stop', done);
+      return done;
+    }
+    isAllowed(app) {
+      if (!this.session) return true;
+      const list = PRESETS[this.session.name];
+      return list === null || list.includes(app) || app === 'settings';
+    }
+    stats() {
+      return { sessions: this.history.length, minutes: this.history.reduce((a, s) => a + s.actual, 0) };
+    }
+  }
+
+  class NexofaCore {
+    constructor(opts) {
+      opts = opts || {};
+      this.bus = new EventBus();
+      this.config = new Config(this.bus);
+      this.privacy = new PrivacyFilter();
+      this.local = new LocalAIProvider(opts.enableMock);
+      this.cloud = new CloudAIProvider(opts.cloudTransport);
+      this.ai = new AIRouter(this.local, this.cloud, this.privacy, this.config, this.bus);
+      this.purpose = new PurposeMode(this.bus, opts.now);
+      this.bus.emit('boot', { version: '0.1' });
+    }
+    state() {
+      return { config: { ...this.config.v }, purpose: this.purpose.session, stats: this.purpose.stats() };
+    }
+  }
+
+  const api = { NexofaCore, AIProvider, AIError, AI_ERRORS, HttpProxyTransport, EventBus, Config, PrivacyFilter, LocalAIProvider, CloudAIProvider, AIRouter, PurposeMode };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.Nexofa = api;
+})(this);
+</script>
+<script>
+const core=new Nexofa.NexofaCore();
+const $=id=>document.getElementById(id);
+const APPS=[['notes','Notas'],['calc','Calculadora'],['clock','Reloj'],['ai','IA'],['settings','Ajustes'],['files','Archivos']];
+function go(p){for(const s of['home','ai','purpose','settings'])$(s).classList.toggle('hide',s!==p);
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));render();}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
+function tick(){const d=new Date();$('clock').textContent=d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});$('date').textContent=d.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long'});}
+setInterval(tick,1000);tick();
+function render(){
+  const s=core.purpose.session;
+  $('modeName').textContent=s?'Modo: '+s.name:'Modo normal';
+  $('modeInfo').textContent=s?s.minutes+' min planificados':'Sin sesión activa';
+  $('apps').innerHTML='';
+  for(const[id,n]of APPS){const b=document.createElement('button');b.className='app'+(core.purpose.isAllowed(id)?'':' off');b.textContent=n;
+    b.onclick=()=>{$('msg').textContent=core.purpose.isAllowed(id)?n+': aún no implementada en 0.1':n+' está restringida en este modo';if(id==='ai'&&core.purpose.isAllowed('ai'))go('ai');if(id==='settings')go('settings');};$('apps').appendChild(b);}
+  const as=core.ai.status();$('aiStat').textContent=as.cloud==='ready'?'IA CLOUD conectada':(as.local==='MOCK'?'IA LOCAL (MOCK)':'IA NO CONFIGURADA');
+  const st=core.purpose.stats();$('pstats').textContent='Sesiones: '+st.sessions+' · Minutos: '+st.minutes;
+  for(const k of['allowCloud','cloudConsent','online'])$(k).checked=core.config.get(k);$('aiMode').value=core.config.get('aiMode');
+  $('log').innerHTML=core.bus.log.slice(-6).map(e=>e.e).join(' · ');
+}
+for(const k of['allowCloud','cloudConsent','online'])$(k).onchange=e=>{core.config.set(k,e.target.checked);render();};
+$('aiMode').onchange=e=>core.config.set('aiMode',e.target.value);
+const LBL={local:'IA LOCAL',cloud:'IA CLOUD',not_configured:'IA NO CONFIGURADA',blocked:'BLOQUEADO (datos sensibles)',error:'ERROR'};
+$('ask').onclick=async()=>{try{if(!core.purpose.isAllowed('ai'))throw new Error('IA restringida en este modo');
+  const r=await core.ai.route({text:$('q').value});
+  $('ans').innerHTML='<span class="badge">'+LBL[r.status]+(r.status==='local'&&core.local.isMock?' (MOCK)':'')+'</span> '+(r.redacted?'<span class="badge">datos redactados</span> ':'')+'<p></p>';
+  $('ans').lastChild.textContent=r.text||(r.error?'Detalle: '+(Nexofa.AI_ERRORS[r.error]||r.error):r.note?'Motivo: '+r.note:'');}catch(e){$('ans').textContent='ERROR: '+e.message;}render();};
+$('proxyBtn').onclick=()=>{try{core.cloud.transport=Nexofa.HttpProxyTransport($('proxy').value.trim());$('proxyMsg').textContent='Proxy configurado. Envía una consulta para comprobarlo.';}catch(e){core.cloud.transport=null;$('proxyMsg').textContent='ERROR: '+e.message;}render();};
+// En Claude (artefacto publicado) la IA real llega por la capacidad "sample"; sin ella queda NO CONFIGURADA.
+if(window.claude&&window.claude.use){window.claude.use('sample').then(sm=>{if(sm){core.cloud.transport=async t=>(await sm('Responde de forma útil y breve a esta consulta del usuario:\n'+t)).text;render();}}).catch(()=>{});}
+$('pstart').onclick=()=>{try{core.purpose.start($('pm').value,Number($('pmin').value));}catch(e){$('pstats').textContent=e.message;}render();};
+$('pstop').onclick=()=>{core.purpose.stop();render();};
+core.bus.on('error',e=>console.error('nexofa',e));
+render();
+</script></body></html>
