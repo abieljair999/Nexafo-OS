@@ -686,6 +686,10 @@ function addToDock(id) {
     return;
   }
 
+  if (!dockApps[id]) {
+  return;
+  }
+  
   const button =
     document.createElement("button");
 
