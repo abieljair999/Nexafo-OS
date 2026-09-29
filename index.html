@@ -809,14 +809,10 @@ function askAI() {
 }
 
 
-/* ARRASTRAR VENTANAS */
+/* ARRASTRAR VENTANAS - MOUSE Y TACTIL */
 
 document.querySelectorAll(".window").forEach(function(windowElement) {
 
-  windowElement.addEventListener("mousedown", function() {
-    windowElement.style.zIndex = getHighestZIndex() + 1;
-  });
-  
   const header =
     windowElement.querySelector(".window-header");
 
@@ -824,9 +820,11 @@ document.querySelectorAll(".window").forEach(function(windowElement) {
   let offsetX = 0;
   let offsetY = 0;
 
-  header.addEventListener("mousedown", function(event) {
+  function startDrag(clientX, clientY) {
 
-    if (event.target.tagName === "BUTTON") return;
+    if (windowElement.classList.contains("maximized")) {
+      return;
+    }
 
     dragging = true;
 
@@ -834,36 +832,126 @@ document.querySelectorAll(".window").forEach(function(windowElement) {
       windowElement.getBoundingClientRect();
 
     offsetX =
-      event.clientX - rect.left;
+      clientX - rect.left;
 
     offsetY =
-      event.clientY - rect.top;
+      clientY - rect.top;
 
-    windowElement.style.transform =
-      "none";
+    windowElement.style.transform = "none";
 
     windowElement.style.zIndex =
       getHighestZIndex() + 1;
+  }
+
+  function moveDrag(clientX, clientY) {
+
+    if (!dragging) {
+      return;
+    }
+
+    windowElement.style.left =
+      (clientX - offsetX) + "px";
+
+    windowElement.style.top =
+      (clientY - offsetY) + "px";
+  }
+
+  function stopDrag() {
+    dragging = false;
+  }
+
+
+  /* MOUSE */
+
+  header.addEventListener("mousedown", function(event) {
+
+    if (event.target.tagName === "BUTTON") {
+      return;
+    }
+
+    startDrag(
+      event.clientX,
+      event.clientY
+    );
+
   });
 
 
   document.addEventListener("mousemove", function(event) {
 
-    if (!dragging) return;
+    moveDrag(
+      event.clientX,
+      event.clientY
+    );
 
-    windowElement.style.left =
-      (event.clientX - offsetX) + "px";
-
-    windowElement.style.top =
-      (event.clientY - offsetY) + "px";
   });
 
 
   document.addEventListener("mouseup", function() {
 
-    dragging = false;
+    stopDrag();
 
   });
+
+
+  /* TACTIL */
+
+  header.addEventListener("touchstart", function(event) {
+
+    if (event.target.tagName === "BUTTON") {
+      return;
+    }
+
+    const touch = event.touches[0];
+
+    startDrag(
+      touch.clientX,
+      touch.clientY
+    );
+
+  }, { passive: true });
+
+
+  document.addEventListener("touchmove", function(event) {
+
+    if (!dragging) {
+      return;
+    }
+
+    const touch = event.touches[0];
+
+    moveDrag(
+      touch.clientX,
+      touch.clientY
+    );
+
+    event.preventDefault();
+
+  }, { passive: false });
+
+
+  document.addEventListener("touchend", function() {
+
+    stopDrag();
+
+  });
+
+
+  /* AL TOCAR LA VENTANA, PASA AL FRENTE */
+
+  windowElement.addEventListener("mousedown", function() {
+
+    windowElement.style.zIndex =
+      getHighestZIndex() + 1;
+
+  });
+
+  windowElement.addEventListener("touchstart", function() {
+
+    windowElement.style.zIndex =
+      getHighestZIndex() + 1;
+
+  }, { passive: true });
 
 });
   </script>
