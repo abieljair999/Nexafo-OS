@@ -630,6 +630,14 @@ function maximizeWindow(id) {
 
     windowElement.classList.remove("maximized");
 
+    windowElement.style.position = "";
+    windowElement.style.width = "";
+    windowElement.style.height = "";
+    windowElement.style.left = "";
+    windowElement.style.top = "";
+    windowElement.style.transform =
+      "translate(-50%, -50%)";
+
   } else {
 
     windowElement.classList.add("maximized");
@@ -639,7 +647,6 @@ function maximizeWindow(id) {
   windowElement.style.zIndex =
     getHighestZIndex() + 1;
 }
-
     
 /* MINIMIZAR Y AÑADIR AL DOCK */
 
