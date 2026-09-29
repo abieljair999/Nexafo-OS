@@ -289,57 +289,6 @@
       line-height: 1.5;
     }
 
-    /* ARCHIVOS */
-
-function searchFiles() {
-
-  const search =
-    document.getElementById("fileSearch").value.toLowerCase();
-
-  const files =
-    document.querySelectorAll(".file-item");
-
-  files.forEach(function(file) {
-
-    const name =
-      file.textContent.toLowerCase();
-
-    if (name.includes(search)) {
-      file.style.display = "flex";
-    } else {
-      file.style.display = "none";
-    }
-
-  });
-
-}
-
-
-function createFolder() {
-
-  const name =
-    prompt("Nombre de la nueva carpeta:");
-
-  if (!name || !name.trim()) {
-    return;
-  }
-
-  const fileGrid =
-    document.getElementById("fileGrid");
-
-  const folder =
-    document.createElement("div");
-
-  folder.className = "file-item";
-
-  folder.innerHTML =
-    '<span class="file-icon">📁</span>' +
-    '<span>' + name.trim() + '</span>';
-
-  fileGrid.appendChild(folder);
-
-}
-
 
 /* NEXAFO AI */
     
@@ -932,7 +881,53 @@ function getHighestZIndex() {
   return highest;
 }
 
+/* ARCHIVOS */
 
+function searchFiles() {
+
+  const search =
+    document.getElementById("fileSearch").value.toLowerCase();
+
+  const files =
+    document.querySelectorAll(".file-item");
+
+  files.forEach(function(file) {
+
+    const name =
+      file.textContent.toLowerCase();
+
+    if (name.includes(search)) {
+      file.style.display = "flex";
+    } else {
+      file.style.display = "none";
+    }
+
+  });
+
+}
+
+
+function createFolder() {
+
+  const fileGrid =
+    document.getElementById("fileGrid");
+
+  const folder =
+    document.createElement("div");
+
+  folder.className = "file-item";
+
+  folder.innerHTML =
+    '<span class="file-icon">📁</span>' +
+    '<span>Nueva carpeta</span>';
+
+  fileGrid.appendChild(folder);
+
+}
+
+
+/* NEXAFO AI */
+    
 /* NEXAFO AI */
 
 function askAI() {
