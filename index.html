@@ -591,6 +591,10 @@ function openWindow(id) {
   const windowElement =
     document.getElementById(id);
 
+  if (!windowElement) {
+    return;
+  }
+
   windowElement.style.display = "block";
 
   windowElement.style.zIndex =
@@ -600,7 +604,7 @@ function openWindow(id) {
     document.getElementById("dock-" + id);
 
   if (dockButton) {
-    dockButton.remove();
+    dockButton.classList.add("active");
   }
 }
 
