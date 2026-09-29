@@ -12,7 +12,6 @@
       padding: 0;
       font-family: Arial, sans-serif;
     }
-
     body {
       min-height: 100vh;
       overflow: hidden;
@@ -539,21 +538,13 @@
 
     <!-- DOCK -->
 
-    <nav class="dock">
+<nav class="dock" id="dock">
 
-      <button onclick="openWindow('aiWindow')">
-        ◉
-      </button>
+  <button onclick="closeAllWindows()">
+    ⌂
+  </button>
 
-      <button onclick="closeAllWindows()">
-        ⌂
-      </button>
-
-      <button onclick="openWindow('settingsWindow')">
-        ⚙
-      </button>
-
-    </nav>
+</nav>
 
   </main>
 
@@ -583,45 +574,88 @@
 
     /* ABRIR VENTANA */
 
-    function openWindow(id) {
+function openWindow(id) {
 
-      const windowElement =
-        document.getElementById(id);
+  const windowElement =
+    document.getElementById(id);
 
-      windowElement.style.display = "block";
+  windowElement.style.display = "block";
 
-      windowElement.style.zIndex =
-        getHighestZIndex() + 1;
-    }
+  windowElement.style.zIndex =
+    getHighestZIndex() + 1;
 
+  const dockButton =
+    document.getElementById("dock-" + id);
+
+  if (dockButton) {
+    dockButton.remove();
+  }
+}
 
     /* CERRAR */
 
-    function closeWindow(id) {
+function closeWindow(id) {
 
-      document.getElementById(id).style.display =
-        "none";
-    }
+  document.getElementById(id).style.display =
+    "none";
 
+  const dockButton =
+    document.getElementById("dock-" + id);
 
-    /* MINIMIZAR */
-
-    function minimizeWindow(id) {
-
-      document.getElementById(id).style.display =
-        "none";
-    }
+  if (dockButton) {
+    dockButton.remove();
+  }
+}
 
 
-    /* MAXIMIZAR */
+    /* MINIMIZAR Y AÑADIR AL DOCK */
 
-    function maximizeWindow(id) {
+const appNames = {
+  aiWindow: "◉",
+  filesWindow: "□",
+  browserWindow: "◌",
+  settingsWindow: "⚙"
+};
 
-      const windowElement =
-        document.getElementById(id);
+function minimizeWindow(id) {
 
-      windowElement.classList.toggle("maximized");
-    }
+  const windowElement =
+    document.getElementById(id);
+
+  windowElement.style.display = "none";
+
+  addToDock(id);
+}
+
+
+function addToDock(id) {
+
+  const dock =
+    document.getElementById("dock");
+
+  if (document.getElementById("dock-" + id)) {
+    return;
+  }
+
+  const button =
+    document.createElement("button");
+
+  button.id =
+    "dock-" + id;
+
+  button.textContent =
+    appNames[id];
+
+  button.onclick = function() {
+
+    openWindow(id);
+
+    button.remove();
+
+  };
+
+  dock.appendChild(button);
+}
 
 
     /* CERRAR TODAS */
