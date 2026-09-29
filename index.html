@@ -127,6 +127,10 @@
       background: rgba(255,255,255,0.2);
     }
 
+    .dock button.active {
+  background: rgba(255,255,255,0.22);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
+    }
     /* VENTANAS */
 
     .window {
@@ -553,26 +557,26 @@
 
     /* RELOJ */
 
-    function updateClock() {
+function updateClock() {
 
-      const now = new Date();
+  const now = new Date();
 
-      const hours =
-        String(now.getHours()).padStart(2, "0");
+  const hours =
+    String(now.getHours()).padStart(2, "0");
 
-      const minutes =
-        String(now.getMinutes()).padStart(2, "0");
+  const minutes =
+    String(now.getMinutes()).padStart(2, "0");
 
-      document.getElementById("clock").textContent =
-        hours + ":" + minutes;
-    }
+  document.getElementById("clock").textContent =
+    hours + ":" + minutes;
+}
 
-    setInterval(updateClock, 1000);
+setInterval(updateClock, 1000);
 
-    updateClock();
+updateClock();
 
 
-    /* ABRIR VENTANA */
+/* ABRIR VENTANA */
 
 function openWindow(id) {
 
@@ -592,7 +596,8 @@ function openWindow(id) {
   }
 }
 
-    /* CERRAR */
+
+/* CERRAR VENTANA */
 
 function closeWindow(id) {
 
@@ -607,8 +612,21 @@ function closeWindow(id) {
   }
 }
 
+/* MAXIMIZAR VENTANA */
 
-    /* MINIMIZAR Y AÑADIR AL DOCK */
+function maximizeWindow(id) {
+
+  const windowElement =
+    document.getElementById(id);
+
+  windowElement.classList.toggle("maximized");
+
+  windowElement.style.zIndex =
+    getHighestZIndex() + 1;
+    }
+
+    
+/* MINIMIZAR Y AÑADIR AL DOCK */
 
 const appNames = {
   aiWindow: "◉",
@@ -650,84 +668,94 @@ function addToDock(id) {
 
     openWindow(id);
 
-    button.remove();
-
   };
 
   dock.appendChild(button);
 }
 
 
-    /* CERRAR TODAS */
+/* CERRAR TODAS */
 
-    function closeAllWindows() {
+function closeAllWindows() {
 
-      const windows =
-        document.querySelectorAll(".window");
+  const windows =
+    document.querySelectorAll(".window");
 
-      windows.forEach(function(windowElement) {
+  windows.forEach(function(windowElement) {
 
-        windowElement.style.display = "none";
+    windowElement.style.display = "none";
 
-      });
+  });
+
+  const dockButtons =
+    document.querySelectorAll(".dock button[id^='dock-']");
+
+  dockButtons.forEach(function(button) {
+
+    button.remove();
+
+  });
+}
+
+
+/* ORDEN DE VENTANAS */
+
+function getHighestZIndex() {
+
+  const windows =
+    document.querySelectorAll(".window");
+
+  let highest = 10;
+
+  windows.forEach(function(windowElement) {
+
+    const z =
+      parseInt(
+        window.getComputedStyle(windowElement).zIndex
+      );
+
+    if (z > highest) {
+      highest = z;
     }
 
+  });
 
-    /* ORDEN DE VENTANAS */
-
-    function getHighestZIndex() {
-
-      const windows =
-        document.querySelectorAll(".window");
-
-      let highest = 10;
-
-      windows.forEach(function(windowElement) {
-
-        const z =
-          parseInt(
-            window.getComputedStyle(windowElement).zIndex
-          );
-
-        if (z > highest) {
-          highest = z;
-        }
-
-      });
-
-      return highest;
-    }
+  return highest;
+}
 
 
-    /* NEXAFO AI */
+/* NEXAFO AI */
 
-    function askAI() {
+function askAI() {
 
-      const input =
-        document.getElementById("aiInput");
+  const input =
+    document.getElementById("aiInput");
 
-      const answer =
-        document.getElementById("aiAnswer");
+  const answer =
+    document.getElementById("aiAnswer");
 
-      const message =
-        input.value.trim();
+  const message =
+    input.value.trim();
 
-      if (!message) {
+  if (!message) {
 
-        answer.textContent =
-          "Escribe un mensaje primero.";
+    answer.textContent =
+      "Escribe un mensaje primero.";
 
-        return;
-      }
+    return;
+  }
 
-      answer.textContent =
-        "Nexafo AI recibió: " + message;
-    }
+  answer.textContent =
+    "Nexafo AI recibió: " + message;
+}
+
+
 /* ARRASTRAR VENTANAS */
 
 document.querySelectorAll(".window").forEach(function(windowElement) {
 
-  const header = windowElement.querySelector(".window-header");
+  const header =
+    windowElement.querySelector(".window-header");
 
   let dragging = false;
   let offsetX = 0;
@@ -739,14 +767,22 @@ document.querySelectorAll(".window").forEach(function(windowElement) {
 
     dragging = true;
 
-    const rect = windowElement.getBoundingClientRect();
+    const rect =
+      windowElement.getBoundingClientRect();
 
-    offsetX = event.clientX - rect.left;
-    offsetY = event.clientY - rect.top;
+    offsetX =
+      event.clientX - rect.left;
 
-    windowElement.style.transform = "none";
-    windowElement.style.zIndex = getHighestZIndex() + 1;
+    offsetY =
+      event.clientY - rect.top;
+
+    windowElement.style.transform =
+      "none";
+
+    windowElement.style.zIndex =
+      getHighestZIndex() + 1;
   });
+
 
   document.addEventListener("mousemove", function(event) {
 
@@ -758,6 +794,7 @@ document.querySelectorAll(".window").forEach(function(windowElement) {
     windowElement.style.top =
       (event.clientY - offsetY) + "px";
   });
+
 
   document.addEventListener("mouseup", function() {
 
