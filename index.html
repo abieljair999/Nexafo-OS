@@ -26,6 +26,66 @@
       padding: 22px;
     }
 
+    /* ARCHIVOS */
+
+.files-toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.files-toolbar input {
+  flex: 1;
+  padding: 11px 12px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+}
+
+.files-toolbar button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.files-path {
+  margin-bottom: 18px;
+  opacity: 0.7;
+}
+
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 14px;
+}
+
+.file-item {
+  min-height: 105px;
+  padding: 15px 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+  background: rgba(255,255,255,0.06);
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.file-item:hover {
+  background: rgba(255,255,255,0.12);
+  transform: translateY(-3px);
+}
+
+.file-icon {
+  font-size: 38px;
+  margin-bottom: 8px;
+}
+    
     /* CABECERA */
 
     .topbar {
@@ -229,6 +289,60 @@
       line-height: 1.5;
     }
 
+    /* ARCHIVOS */
+
+function searchFiles() {
+
+  const search =
+    document.getElementById("fileSearch").value.toLowerCase();
+
+  const files =
+    document.querySelectorAll(".file-item");
+
+  files.forEach(function(file) {
+
+    const name =
+      file.textContent.toLowerCase();
+
+    if (name.includes(search)) {
+      file.style.display = "flex";
+    } else {
+      file.style.display = "none";
+    }
+
+  });
+
+}
+
+
+function createFolder() {
+
+  const name =
+    prompt("Nombre de la nueva carpeta:");
+
+  if (!name || !name.trim()) {
+    return;
+  }
+
+  const fileGrid =
+    document.getElementById("fileGrid");
+
+  const folder =
+    document.createElement("div");
+
+  folder.className = "file-item";
+
+  folder.innerHTML =
+    '<span class="file-icon">📁</span>' +
+    '<span>' + name.trim() + '</span>';
+
+  fileGrid.appendChild(folder);
+
+}
+
+
+/* NEXAFO AI */
+    
     /* NEXAFO AI */
 
     .ai-input {
@@ -427,40 +541,76 @@
 
     <section class="window" id="filesWindow">
 
-      <div class="window-header">
+  <div class="window-header">
 
-        <span class="window-title">
-          Archivos
-        </span>
+    <span class="window-title">
+      Archivos
+    </span>
 
-        <div class="window-controls">
+    <div class="window-controls">
 
-          <button onclick="minimizeWindow('filesWindow')">
-            −
-          </button>
+      <button onclick="minimizeWindow('filesWindow')">
+        −
+      </button>
 
-          <button onclick="maximizeWindow('filesWindow')">
-            □
-          </button>
+      <button onclick="maximizeWindow('filesWindow')">
+        □
+      </button>
 
-          <button onclick="closeWindow('filesWindow')">
-            ×
-          </button>
+      <button onclick="closeWindow('filesWindow')">
+        ×
+      </button>
 
-        </div>
+    </div>
 
+  </div>
+
+  <div class="window-content">
+
+    <div class="files-toolbar">
+
+      <input
+        id="fileSearch"
+        type="text"
+        placeholder="Buscar archivos..."
+        oninput="searchFiles()"
+      >
+
+      <button onclick="createFolder()">
+        + Carpeta
+      </button>
+
+    </div>
+
+    <div class="files-path">
+      📁 Mi dispositivo
+    </div>
+
+    <div class="file-grid" id="fileGrid">
+
+      <div class="file-item">
+        <span class="file-icon">📁</span>
+        <span>Documentos</span>
       </div>
 
-      <div class="window-content">
-
-        <h2>Archivos</h2>
-
-        <p>
-          El administrador de archivos de Nexafo OS
-          se desarrollará en una próxima etapa.
-        </p>
-
+      <div class="file-item">
+        <span class="file-icon">📁</span>
+        <span>Imágenes</span>
       </div>
+
+      <div class="file-item">
+        <span class="file-icon">📁</span>
+        <span>Proyectos</span>
+      </div>
+
+      <div class="file-item">
+        <span class="file-icon">📄</span>
+        <span>README.txt</span>
+      </div>
+
+    </div>
+
+  </div>
 
     </section>
 
