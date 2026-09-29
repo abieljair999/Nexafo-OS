@@ -923,7 +923,7 @@ function createFolder() {
     document.createElement("div");
 
   folder.className = "file-item";
-
+  folder.classList.add("created-folder");
   folder.innerHTML =
     '<span class="file-icon">📁</span>' +
     '<span>' + folderName.trim() + '</span>';
@@ -991,6 +991,13 @@ function openFolder(folderName) {
       <span>README.txt</span>
     </div>
   `;
+
+  const folders =
+    document.querySelectorAll(".created-folder");
+
+  folders.forEach(function(folder) {
+    fileGrid.appendChild(folder);
+  });
     }
     
 /* NEXAFO AI */
