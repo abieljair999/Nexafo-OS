@@ -909,6 +909,13 @@ function searchFiles() {
 
 function createFolder() {
 
+  const folderName =
+    prompt("Nombre de la carpeta:");
+
+  if (!folderName || !folderName.trim()) {
+    return;
+  }
+
   const fileGrid =
     document.getElementById("fileGrid");
 
@@ -919,13 +926,73 @@ function createFolder() {
 
   folder.innerHTML =
     '<span class="file-icon">📁</span>' +
-    '<span>Nueva carpeta</span>';
+    '<span>' + folderName.trim() + '</span>';
+
+  folder.onclick = function() {
+    openFolder(folderName.trim());
+  };
 
   fileGrid.appendChild(folder);
+    }
 
-}
+function openFolder(folderName) {
 
+  const fileGrid =
+    document.getElementById("fileGrid");
 
+  const path =
+    document.querySelector(".files-path");
+
+  path.textContent =
+    "📁 Mi dispositivo / " + folderName;
+
+  fileGrid.innerHTML = `
+    <div class="file-item" onclick="goBackFiles()">
+      <span class="file-icon">↩️</span>
+      <span>Volver</span>
+    </div>
+
+    <div class="file-item">
+      <span class="file-icon">📄</span>
+      <span>Archivo nuevo.txt</span>
+    </div>
+  `;
+    }
+
+    function goBackFiles() {
+
+  const fileGrid =
+    document.getElementById("fileGrid");
+
+  const path =
+    document.querySelector(".files-path");
+
+  path.textContent =
+    "📁 Mi dispositivo";
+
+  fileGrid.innerHTML = `
+    <div class="file-item">
+      <span class="file-icon">📁</span>
+      <span>Documentos</span>
+    </div>
+
+    <div class="file-item">
+      <span class="file-icon">📁</span>
+      <span>Imágenes</span>
+    </div>
+
+    <div class="file-item">
+      <span class="file-icon">📁</span>
+      <span>Proyectos</span>
+    </div>
+
+    <div class="file-item">
+      <span class="file-icon">📄</span>
+      <span>README.txt</span>
+    </div>
+  `;
+    }
+    
 /* NEXAFO AI */
     
 /* NEXAFO AI */
