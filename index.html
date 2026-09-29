@@ -260,16 +260,19 @@
     }
 
     /* MAXIMIZADA */
+    
+      .window.maximized {
+  position: fixed;
+  width: calc(100vw - 30px);
+  height: calc(100vh - 100px);
 
-    .window.maximized {
-      width: calc(100vw - 30px);
-      height: calc(100vh - 100px);
+  left: 15px !important;
+  top: 15px !important;
 
-      left: 15px;
-      top: 15px;
-
-      transform: none;
-    }
+  transform: none !important;
+  max-width: none;
+  max-height: none;
+      }
 
     /* MÓVIL */
 
