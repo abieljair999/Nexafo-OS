@@ -613,8 +613,24 @@ function openWindow(id) {
 
 function closeWindow(id) {
 
-  document.getElementById(id).style.display =
-    "none";
+  const windowElement =
+    document.getElementById(id);
+
+  if (!windowElement) {
+    return;
+  }
+
+  windowElement.style.display = "none";
+
+  windowElement.classList.remove("maximized");
+
+  windowElement.style.position = "";
+  windowElement.style.width = "";
+  windowElement.style.height = "";
+  windowElement.style.left = "";
+  windowElement.style.top = "";
+  windowElement.style.transform =
+    "translate(-50%, -50%)";
 
   const dockButton =
     document.getElementById("dock-" + id);
@@ -622,8 +638,8 @@ function closeWindow(id) {
   if (dockButton) {
     dockButton.remove();
   }
-}
-
+    }
+    
 /* MAXIMIZAR VENTANA */
 
 function maximizeWindow(id) {
