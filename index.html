@@ -813,6 +813,10 @@ function askAI() {
 
 document.querySelectorAll(".window").forEach(function(windowElement) {
 
+  windowElement.addEventListener("mousedown", function() {
+    windowElement.style.zIndex = getHighestZIndex() + 1;
+  });
+  
   const header =
     windowElement.querySelector(".window-header");
 
