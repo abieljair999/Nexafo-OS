@@ -622,11 +622,23 @@ function maximizeWindow(id) {
   const windowElement =
     document.getElementById(id);
 
-  windowElement.classList.toggle("maximized");
+  if (!windowElement) {
+    return;
+  }
+
+  if (windowElement.classList.contains("maximized")) {
+
+    windowElement.classList.remove("maximized");
+
+  } else {
+
+    windowElement.classList.add("maximized");
+
+  }
 
   windowElement.style.zIndex =
     getHighestZIndex() + 1;
-    }
+}
 
     
 /* MINIMIZAR Y AÑADIR AL DOCK */
