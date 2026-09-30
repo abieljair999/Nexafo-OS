@@ -2,2403 +2,1449 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nexofa OS 1.0</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Nexofa OS 1.4</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
+:root{
+ --bg:#070b14;
+ --surface:#101827;
+ --surface2:#172238;
+ --surface3:#1d2a42;
+ --text:#f5f7ff;
+ --muted:#8d9bb5;
+ --accent:#657cff;
+ --accent2:#8b5cf6;
+ --cyan:#43d9ff;
+ --green:#3ddc91;
+ --red:#ff6374;
+ --yellow:#ffc857;
+ --border:rgba(255,255,255,.09);
+ --glass:rgba(13,20,35,.82);
+ --shadow:0 25px 80px rgba(0,0,0,.48);
 }
 
-:root {
-    --bg: #07111f;
-    --panel: rgba(13, 27, 45, .94);
-    --panel2: rgba(20, 38, 61, .96);
-    --text: #f4f7fb;
-    --muted: #9eafc4;
-    --accent: #4da3ff;
-    --accent2: #72c7ff;
-    --border: rgba(255,255,255,.12);
-    --danger: #ff5d6c;
-    --shadow: 0 20px 50px rgba(0,0,0,.35);
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
 }
 
-body.light {
-    --bg: #eaf2fb;
-    --panel: rgba(255,255,255,.94);
-    --panel2: rgba(245,249,255,.98);
-    --text: #142033;
-    --muted: #63738a;
-    --accent: #1877d4;
-    --accent2: #4098e8;
-    --border: rgba(0,0,0,.1);
-    --shadow: 0 20px 50px rgba(50,80,110,.2);
+body{
+ font-family:Inter,Arial,sans-serif;
+ background:var(--bg);
+ color:var(--text);
+ overflow:hidden;
 }
 
-body {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    background:
-        radial-gradient(circle at 20% 20%, rgba(40,130,255,.22), transparent 30%),
-        radial-gradient(circle at 80% 70%, rgba(0,210,255,.12), transparent 30%),
-        var(--bg);
-    color: var(--text);
+button,
+input,
+textarea{
+ font:inherit;
 }
 
-/* =========================
-   ESCRITORIO
-========================= */
-
-#desktop {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
+button{
+ cursor:pointer;
+ border:0;
 }
 
-.wallpaper {
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(circle at 50% 40%, rgba(50,150,255,.18), transparent 25%),
-        linear-gradient(135deg, transparent 45%, rgba(255,255,255,.025) 46%, transparent 47%),
-        linear-gradient(45deg, transparent 45%, rgba(255,255,255,.02) 46%, transparent 47%);
-    pointer-events: none;
+.hidden{
+ display:none!important;
 }
 
-.logo-watermark {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: clamp(50px, 10vw, 130px);
-    font-weight: 800;
-    letter-spacing: 15px;
-    opacity: .035;
-    user-select: none;
+.muted{
+ color:var(--muted);
 }
 
-/* =========================
-   BARRA SUPERIOR
-========================= */
-
-.topbar {
-    height: 52px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 14px;
-    background: rgba(5,15,28,.72);
-    backdrop-filter: blur(18px);
-    border-bottom: 1px solid var(--border);
+.logoMark{
+ width:38px;
+ height:38px;
+ flex-shrink:0;
 }
 
-body.light .topbar {
-    background: rgba(255,255,255,.72);
+.logoMark svg{
+ width:100%;
+ height:100%;
 }
 
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    font-weight: 700;
+.brand{
+ display:flex;
+ align-items:center;
+ gap:9px;
+ font-weight:800;
+ letter-spacing:-.5px;
 }
 
-.nexofa-symbol {
-    width: 30px;
-    height: 30px;
-    border-radius: 9px;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(135deg,var(--accent),var(--accent2));
-    color: white;
-    font-weight: 900;
-    box-shadow: 0 5px 18px rgba(50,150,255,.3);
+.brandName{
+ font-size:17px;
 }
 
-.status {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-size: 13px;
-    color: var(--muted);
-}
-
-.status button {
-    border: 0;
-    background: transparent;
-    color: var(--text);
-    cursor: pointer;
-    font-size: 15px;
-}
-
-#clock {
-    font-variant-numeric: tabular-nums;
+.brandName span{
+ color:var(--accent);
 }
 
 /* =========================
-   ICONOS ESCRITORIO
+   BOOT
 ========================= */
 
-.desktop-icons {
-    position: absolute;
-    top: 75px;
-    left: 18px;
-    display: grid;
-    grid-template-columns: 90px;
-    gap: 18px;
+#boot{
+ position:fixed;
+ inset:0;
+ z-index:9999;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:
+ radial-gradient(circle at 50% 35%,rgba(101,124,255,.17),transparent 35%),
+ #050811;
 }
 
-.desktop-icon {
-    width: 82px;
-    padding: 8px;
-    border-radius: 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: .2s;
+.bootBox{
+ width:min(620px,90%);
+ padding:34px;
+ background:rgba(12,18,32,.95);
+ border:1px solid var(--border);
+ border-radius:28px;
+ box-shadow:var(--shadow);
 }
 
-.desktop-icon:hover {
-    background: rgba(255,255,255,.08);
+.bootBrand{
+ display:flex;
+ align-items:center;
+ gap:14px;
+ margin-bottom:7px;
 }
 
-.desktop-icon .icon {
-    font-size: 35px;
-    margin-bottom: 6px;
+.bootBrand .logoMark{
+ width:62px;
+ height:62px;
 }
 
-.desktop-icon span {
-    font-size: 12px;
-    word-break: break-word;
+.bootBrand h1{
+ font-size:34px;
+ letter-spacing:-1.5px;
+}
+
+.bootBrand h1 span{
+ color:var(--accent);
+}
+
+.bootLine{
+ padding:10px 0;
+ color:var(--muted);
+ border-bottom:1px solid rgba(255,255,255,.045);
+}
+
+.bootLine.done{
+ color:var(--green);
+}
+
+.progress{
+ height:7px;
+ background:#202a40;
+ border-radius:30px;
+ overflow:hidden;
+ margin-top:22px;
+}
+
+.progressBar{
+ height:100%;
+ width:0;
+ background:linear-gradient(
+  90deg,
+  var(--accent),
+  var(--accent2),
+  var(--cyan)
+ );
+ transition:.3s;
+}
+
+/* =========================
+   DESKTOP
+========================= */
+
+#desktop{
+ position:fixed;
+ inset:0;
+ background:
+ radial-gradient(
+  circle at 15% 18%,
+  rgba(101,124,255,.18),
+  transparent 30%
+ ),
+ radial-gradient(
+  circle at 85% 80%,
+  rgba(139,92,246,.14),
+  transparent 34%
+ ),
+ linear-gradient(
+  135deg,
+  #070b14,
+  #0e1729
+ );
+}
+
+#topbar{
+ position:absolute;
+ top:0;
+ left:0;
+ right:0;
+ height:54px;
+ z-index:1000;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 16px;
+ background:rgba(7,11,20,.72);
+ backdrop-filter:blur(22px);
+ border-bottom:1px solid var(--border);
+}
+
+.top{
+ display:flex;
+ align-items:center;
+ gap:7px;
+ color:white;
+ background:transparent;
+ padding:7px 10px;
+ border-radius:10px;
+}
+
+.top:hover{
+ background:rgba(255,255,255,.07);
+}
+
+#clock{
+ color:var(--muted);
+ font-size:13px;
+ margin-left:6px;
+}
+
+.desktopIcons{
+ position:absolute;
+ top:78px;
+ left:22px;
+ display:grid;
+ grid-template-columns:repeat(2,86px);
+ gap:16px;
+}
+
+.desktopIcon{
+ width:78px;
+ min-height:84px;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ gap:7px;
+ border-radius:15px;
+ color:white;
+}
+
+.desktopIcon:hover{
+ background:rgba(255,255,255,.07);
+}
+
+.desktopIcon span{
+ font-size:12px;
+}
+
+.iconBox{
+ width:46px;
+ height:46px;
+ border-radius:14px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:linear-gradient(
+  135deg,
+  var(--accent),
+  var(--accent2)
+ );
+ box-shadow:
+  0 8px 25px rgba(101,124,255,.2);
 }
 
 /* =========================
    DOCK
 ========================= */
 
-.dock {
-    position: absolute;
-    bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 65px;
-    padding: 8px 12px;
-    border-radius: 20px;
-    background: rgba(10,24,41,.78);
-    border: 1px solid var(--border);
-    backdrop-filter: blur(22px);
-    box-shadow: var(--shadow);
-    display: flex;
-    gap: 7px;
-    align-items: center;
-    z-index: 150;
+#dock{
+ position:absolute;
+ bottom:17px;
+ left:50%;
+ transform:translateX(-50%);
+ display:flex;
+ align-items:center;
+ gap:7px;
+ padding:9px;
+ background:rgba(8,13,24,.86);
+ backdrop-filter:blur(22px);
+ border:1px solid var(--border);
+ border-radius:21px;
+ box-shadow:var(--shadow);
 }
 
-body.light .dock {
-    background: rgba(255,255,255,.8);
+.dockBtn{
+ width:47px;
+ height:47px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:14px;
+ color:white;
+ background:transparent;
+ font-size:20px;
 }
 
-.dock button {
-    width: 48px;
-    height: 48px;
-    border: 0;
-    border-radius: 14px;
-    background: transparent;
-    color: var(--text);
-    font-size: 23px;
-    cursor: pointer;
-    transition: .2s;
+.dockBtn:hover{
+ background:rgba(255,255,255,.09);
+ transform:translateY(-2px);
 }
 
-.dock button:hover {
-    transform: translateY(-5px);
-    background: rgba(255,255,255,.1);
-}
-
-/* =========================
-   VENTANAS
-========================= */
-
-.window {
-    position: absolute;
-    width: min(850px, 92vw);
-    height: min(600px, 78vh);
-    left: 50%;
-    top: 53%;
-    transform: translate(-50%,-50%);
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 17px;
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(25px);
-    overflow: hidden;
-    display: none;
-    flex-direction: column;
-    z-index: 200;
-}
-
-.window.active {
-    display: flex;
-}
-
-.window-header {
-    height: 48px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 13px;
-    border-bottom: 1px solid var(--border);
-}
-
-.window-title {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    font-weight: 600;
-}
-
-.window-controls {
-    display: flex;
-    gap: 6px;
-}
-
-.window-controls button {
-    width: 30px;
-    height: 30px;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--text);
-    cursor: pointer;
-}
-
-.window-controls button:hover {
-    background: rgba(255,255,255,.1);
-}
-
-.window-controls .close:hover {
-    background: var(--danger);
-    color: white;
-}
-
-.window-body {
-    flex: 1;
-    min-height: 0;
-    overflow: auto;
+.dockSep{
+ width:1px;
+ height:28px;
+ background:var(--border);
+ margin:0 3px;
 }
 
 /* =========================
-   START MENU
+   PANELS
 ========================= */
 
-.start-menu {
-    position: absolute;
-    left: 14px;
-    bottom: 91px;
-    width: min(390px, calc(100vw - 28px));
-    max-height: 70vh;
-    padding: 17px;
-    border-radius: 20px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    backdrop-filter: blur(25px);
-    box-shadow: var(--shadow);
-    z-index: 300;
-    display: none;
+.panel{
+ position:absolute;
+ z-index:1800;
+ background:rgba(14,21,36,.97);
+ backdrop-filter:blur(25px);
+ border:1px solid var(--border);
+ border-radius:20px;
+ box-shadow:var(--shadow);
+ padding:17px;
 }
 
-.start-menu.open {
-    display: block;
+#start{
+ left:15px;
+ bottom:83px;
+ width:370px;
 }
 
-.search-box {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--panel2);
-    color: var(--text);
-    outline: none;
+#quick{
+ right:15px;
+ top:65px;
+ width:330px;
 }
 
-.menu-section {
-    margin-top: 17px;
+#notifications{
+ right:15px;
+ top:65px;
+ width:360px;
+ max-height:70vh;
+ overflow:auto;
 }
 
-.menu-section-title {
-    color: var(--muted);
-    font-size: 12px;
-    margin-bottom: 9px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.panelTitle{
+ font-size:18px;
+ font-weight:700;
 }
 
-.app-grid {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 7px;
+.search{
+ width:100%;
+ margin:11px 0;
+ padding:11px 13px;
+ color:white;
+ background:#080e1a;
+ border:1px solid var(--border);
+ border-radius:11px;
+ outline:none;
 }
 
-.app-button {
-    border: 0;
-    background: transparent;
-    color: var(--text);
-    border-radius: 12px;
-    padding: 12px 4px;
-    cursor: pointer;
+.appList{
+ display:grid;
+ gap:5px;
+ max-height:390px;
+ overflow:auto;
 }
 
-.app-button:hover {
-    background: rgba(255,255,255,.08);
+.appItem{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:11px;
+ color:white;
+ background:transparent;
+ border-radius:11px;
+ text-align:left;
 }
 
-.app-button div:first-child {
-    font-size: 27px;
-    margin-bottom: 5px;
+.appItem:hover{
+ background:rgba(255,255,255,.07);
 }
 
-.app-button span {
-    font-size: 11px;
+.appEmoji{
+ width:34px;
+ height:34px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:linear-gradient(
+  135deg,
+  var(--accent),
+  var(--accent2)
+ );
+ border-radius:10px;
+}
+
+.btn{
+ padding:9px 13px;
+ color:white;
+ background:#26344f;
+ border-radius:9px;
+}
+
+.btn:hover{
+ filter:brightness(1.15);
+}
+
+.primary{
+ background:linear-gradient(
+  135deg,
+  var(--accent),
+  var(--accent2)
+ );
+}
+
+.success{
+ background:#194532;
+}
+
+.danger{
+ background:#542530;
+}
+
+.btnRow{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+}
+
+.card{
+ background:rgba(255,255,255,.045);
+ border:1px solid var(--border);
+ border-radius:15px;
+ padding:16px;
+}
+
+.grid{
+ display:grid;
+ gap:14px;
+}
+
+.grid2{
+ grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.grid3{
+ grid-template-columns:repeat(3,minmax(0,1fr));
+}
+
+.status{
+ padding:12px;
+ margin-top:8px;
+ background:rgba(255,255,255,.04);
+ border:1px solid var(--border);
+ border-radius:11px;
+}
+
+.row{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ margin:7px 0;
+ font-size:13px;
+}
+
+.good{
+ color:var(--green);
+}
+
+.warn{
+ color:var(--yellow);
+}
+
+.bad{
+ color:var(--red);
+}
+
+.badge{
+ display:inline-flex;
+ align-items:center;
+ padding:4px 8px;
+ border-radius:20px;
+ background:#26344d;
+ color:#ccd5e9;
+ font-size:11px;
+ margin:2px;
+}
+
+.badge.green{
+ color:#91efbb;
+ background:#173b2c;
 }
 
 /* =========================
-   EXPLORADOR
+   WINDOWS
 ========================= */
 
-.file-toolbar {
-    padding: 12px;
-    display: flex;
-    gap: 8px;
-    border-bottom: 1px solid var(--border);
+.window{
+ position:absolute;
+ top:72px;
+ left:50%;
+ transform:translateX(-50%);
+ width:min(930px,92vw);
+ height:min(650px,78vh);
+ z-index:900;
+ display:flex;
+ flex-direction:column;
+ overflow:hidden;
+ background:rgba(13,20,35,.98);
+ border:1px solid var(--border);
+ border-radius:20px;
+ box-shadow:var(--shadow);
 }
 
-.action-btn {
-    border: 1px solid var(--border);
-    background: var(--panel2);
-    color: var(--text);
-    padding: 8px 12px;
-    border-radius: 9px;
-    cursor: pointer;
+.window.max{
+ top:62px;
+ left:15px;
+ transform:none;
+ width:calc(100vw - 30px);
+ height:calc(100vh - 122px);
 }
 
-.action-btn:hover {
-    background: rgba(77,163,255,.15);
+.windowHeader{
+ height:52px;
+ flex-shrink:0;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 13px;
+ border-bottom:1px solid var(--border);
+ background:rgba(255,255,255,.015);
 }
 
-.file-path {
-    padding: 12px 15px;
-    color: var(--muted);
-    font-size: 13px;
-    border-bottom: 1px solid var(--border);
+.windowTitle{
+ display:flex;
+ align-items:center;
+ gap:9px;
+ font-weight:700;
 }
 
-.file-grid {
-    padding: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(100px,1fr));
-    gap: 12px;
+.windowControls{
+ display:flex;
+ gap:5px;
 }
 
-.file-item {
-    padding: 14px 7px;
-    border-radius: 12px;
-    text-align: center;
-    cursor: pointer;
-    position: relative;
+.windowControls button{
+ width:30px;
+ height:30px;
+ color:white;
+ background:transparent;
+ border-radius:8px;
 }
 
-.file-item:hover {
-    background: rgba(255,255,255,.08);
+.windowControls button:hover{
+ background:rgba(255,255,255,.1);
 }
 
-.file-item .file-icon {
-    font-size: 42px;
-    margin-bottom: 8px;
-}
-
-.file-item .file-name {
-    font-size: 12px;
-    word-break: break-word;
-}
-
-.file-delete {
-    position: absolute;
-    right: 2px;
-    top: 2px;
-    border: 0;
-    background: var(--danger);
-    color: white;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: none;
-}
-
-.file-item:hover .file-delete {
-    display: block;
+.windowContent{
+ flex:1;
+ overflow:auto;
+ padding:19px;
 }
 
 /* =========================
-   NOTAS
+   FILES
 ========================= */
 
-.notes-layout {
-    display: flex;
-    height: 100%;
+.path{
+ display:flex;
+ align-items:center;
+ gap:8px;
+ padding:11px;
+ margin-bottom:14px;
+ background:#080e1a;
+ border:1px solid var(--border);
+ border-radius:11px;
 }
 
-.notes-list {
-    width: 190px;
-    border-right: 1px solid var(--border);
-    padding: 10px;
+.fileGrid{
+ display:grid;
+ grid-template-columns:
+  repeat(auto-fill,minmax(145px,1fr));
+ gap:10px;
 }
 
-.note-editor {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+.file{
+ min-height:120px;
+ padding:15px;
+ background:rgba(255,255,255,.035);
+ border:1px solid var(--border);
+ border-radius:13px;
+ cursor:pointer;
 }
 
-.note-title {
-    padding: 15px;
-    border: 0;
-    border-bottom: 1px solid var(--border);
-    background: transparent;
-    color: var(--text);
-    font-size: 20px;
-    outline: none;
+.file:hover{
+ background:rgba(255,255,255,.075);
 }
 
-.note-content {
-    flex: 1;
-    padding: 15px;
-    border: 0;
-    resize: none;
-    background: transparent;
-    color: var(--text);
-    outline: none;
-    font-size: 15px;
-    line-height: 1.6;
-}
-
-.note-list-item {
-    padding: 10px;
-    border-radius: 9px;
-    cursor: pointer;
-    font-size: 13px;
-    margin-bottom: 5px;
-}
-
-.note-list-item:hover,
-.note-list-item.selected {
-    background: rgba(255,255,255,.08);
+.fileIcon{
+ font-size:29px;
+ margin-bottom:10px;
 }
 
 /* =========================
-   CALCULADORA
+   NOTES
 ========================= */
 
-.calculator {
-    width: min(330px,90%);
-    margin: 25px auto;
+.notesLayout{
+ height:100%;
+ display:flex;
+ flex-direction:column;
+ gap:12px;
 }
 
-.calc-display {
-    width: 100%;
-    height: 70px;
-    margin-bottom: 10px;
-    padding: 12px;
-    border-radius: 13px;
-    border: 1px solid var(--border);
-    background: var(--panel2);
-    color: var(--text);
-    text-align: right;
-    font-size: 28px;
-    outline: none;
+.notesToolbar{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:10px;
+ flex-wrap:wrap;
 }
 
-.calc-buttons {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 7px;
+.noteName{
+ color:var(--muted);
+ font-size:13px;
 }
 
-.calc-buttons button {
-    height: 58px;
-    border: 0;
-    border-radius: 12px;
-    background: var(--panel2);
-    color: var(--text);
-    font-size: 18px;
-    cursor: pointer;
+#notesEditor{
+ flex:1;
+ width:100%;
+ min-height:380px;
+ resize:none;
+ padding:18px;
+ color:white;
+ background:#070c16;
+ border:1px solid var(--border);
+ border-radius:14px;
+ outline:none;
+ line-height:1.65;
 }
 
-.calc-buttons button:hover {
-    background: rgba(77,163,255,.18);
+.notesStatus{
+ color:var(--muted);
+ font-size:12px;
 }
 
 /* =========================
-   CONFIGURACIÓN
+   NEXO
 ========================= */
 
-.settings {
-    padding: 20px;
+.nexoHeader{
+ display:flex;
+ align-items:center;
+ gap:15px;
+ padding:19px;
+ background:
+ linear-gradient(
+  135deg,
+  rgba(101,124,255,.12),
+  rgba(139,92,246,.08)
+ );
+ border:1px solid var(--border);
+ border-radius:17px;
 }
 
-.settings-card {
-    padding: 17px;
-    border: 1px solid var(--border);
-    border-radius: 15px;
-    background: var(--panel2);
-    margin-bottom: 12px;
+.nexoLogo{
+ width:65px;
+ height:65px;
+ padding:11px;
+ border-radius:19px;
+ background:linear-gradient(
+  135deg,
+  rgba(101,124,255,.25),
+  rgba(139,92,246,.22)
+ );
 }
 
-.settings-card h3 {
-    margin-bottom: 7px;
+.chat{
+ margin-top:14px;
+ height:360px;
+ overflow:auto;
+ display:flex;
+ flex-direction:column;
+ gap:10px;
+ padding:13px;
+ background:#080e1a;
+ border:1px solid var(--border);
+ border-radius:15px;
 }
 
-.settings-card p {
-    color: var(--muted);
-    font-size: 13px;
-    margin-bottom: 12px;
+.message{
+ max-width:80%;
+ padding:11px 13px;
+ border-radius:14px;
+ line-height:1.45;
+ font-size:13px;
 }
 
-.toggle {
-    width: 48px;
-    height: 27px;
-    border-radius: 30px;
-    border: 0;
-    background: #555;
-    cursor: pointer;
-    position: relative;
+.message.nexo{
+ align-self:flex-start;
+ background:#192640;
+ border-bottom-left-radius:5px;
 }
 
-.toggle::after {
-    content: "";
-    width: 21px;
-    height: 21px;
-    background: white;
-    position: absolute;
-    top: 3px;
-    left: 4px;
-    border-radius: 50%;
-    transition: .2s;
+.message.user{
+ align-self:flex-end;
+ background:linear-gradient(
+  135deg,
+  #455ed0,
+  #6b45be
+ );
+ border-bottom-right-radius:5px;
 }
 
-body.light .toggle {
-    background: var(--accent);
+.nexoInputRow{
+ display:flex;
+ gap:8px;
+ margin-top:10px;
 }
 
-body.light .toggle::after {
-    left: 23px;
+.nexoInput{
+ flex:1;
+ padding:12px;
+ color:white;
+ background:#080e1a;
+ border:1px solid var(--border);
+ border-radius:11px;
+ outline:none;
 }
 
 /* =========================
-   CENTRO NOTIFICACIONES
+   CALCULATOR
 ========================= */
 
-.notification-panel {
-    position: absolute;
-    top: 62px;
-    right: 14px;
-    width: min(340px, calc(100vw - 28px));
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 17px;
-    padding: 15px;
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(20px);
-    z-index: 250;
-    display: none;
+.calc{
+ max-width:370px;
+ margin:auto;
 }
 
-.notification-panel.open {
-    display: block;
+.calcDisplay{
+ width:100%;
+ height:78px;
+ padding:13px;
+ margin-bottom:10px;
+ color:white;
+ background:#060b14;
+ border:1px solid var(--border);
+ border-radius:13px;
+ text-align:right;
+ font-size:28px;
 }
 
-.notification {
-    padding: 12px;
-    border-radius: 11px;
-    background: var(--panel2);
-    margin-top: 8px;
-    font-size: 13px;
+.calcGrid{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:8px;
 }
 
-.notification strong {
-    display: block;
-    margin-bottom: 4px;
+.calcGrid button{
+ height:55px;
+ color:white;
+ background:#202d47;
+ border-radius:10px;
+ font-size:17px;
 }
 
-.notification small {
-    color: var(--muted);
+.calcGrid button:hover{
+ background:#2a3a5c;
+}
+
+.calcGrid .eq{
+ background:linear-gradient(
+  135deg,
+  var(--accent),
+  var(--accent2)
+ );
 }
 
 /* =========================
-   NEXO IA
+   APP MANAGER
 ========================= */
 
-.ai-chat {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+.appCard{
+ display:flex;
+ align-items:center;
+ gap:13px;
+ padding:14px;
+ margin-bottom:9px;
+ background:rgba(255,255,255,.04);
+ border:1px solid var(--border);
+ border-radius:14px;
 }
 
-.chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 18px;
-}
-
-.message {
-    max-width: 80%;
-    padding: 11px 14px;
-    border-radius: 13px;
-    margin-bottom: 9px;
-    line-height: 1.45;
-    font-size: 14px;
-}
-
-.message.ai {
-    background: var(--panel2);
-    margin-right: auto;
-}
-
-.message.user {
-    background: var(--accent);
-    color: white;
-    margin-left: auto;
-}
-
-.chat-input {
-    display: flex;
-    gap: 8px;
-    padding: 12px;
-    border-top: 1px solid var(--border);
-}
-
-.chat-input input {
-    flex: 1;
-    border: 1px solid var(--border);
-    background: var(--panel2);
-    color: var(--text);
-    border-radius: 10px;
-    padding: 11px;
-    outline: none;
-}
-
-.chat-input button {
-    border: 0;
-    border-radius: 10px;
-    padding: 0 17px;
-    background: var(--accent);
-    color: white;
-    cursor: pointer;
+.appIcon{
+ width:49px;
+ height:49px;
+ flex-shrink:0;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:14px;
+ background:linear-gradient(
+  135deg,
+  var(--accent),
+  var(--accent2)
+ );
+ font-size:22px;
 }
 
 /* =========================
-   ACERCA DE
+   LOG
 ========================= */
 
-.about {
-    height: 100%;
-    display: grid;
-    place-items: center;
-    text-align: center;
-    padding: 30px;
+.log{
+ height:260px;
+ overflow:auto;
+ padding:13px;
+ background:#060b14;
+ border:1px solid var(--border);
+ border-radius:11px;
+ font-family:monospace;
+ font-size:12px;
 }
 
-.about-logo {
-    width: 90px;
-    height: 90px;
-    border-radius: 25px;
-    display: grid;
-    place-items: center;
-    margin: auto;
-    font-size: 42px;
-    font-weight: 900;
-    color: white;
-    background: linear-gradient(135deg,var(--accent),var(--accent2));
-    box-shadow: 0 15px 40px rgba(50,150,255,.25);
+.logLine{
+ margin-bottom:7px;
 }
 
-.about h1 {
-    margin-top: 17px;
-    font-size: 35px;
+/* =========================
+   LOCK
+========================= */
+
+#lock{
+ position:fixed;
+ inset:0;
+ z-index:5000;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ text-align:center;
+ background:
+ radial-gradient(
+  circle at 50% 28%,
+  rgba(101,124,255,.22),
+  transparent 34%
+ ),
+ #070b14;
 }
 
-.about p {
-    color: var(--muted);
-    margin-top: 8px;
-}
-
-.version {
-    margin-top: 18px;
-    display: inline-block;
-    padding: 7px 12px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
+.avatar{
+ width:90px;
+ height:90px;
+ margin:0 auto 15px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:50%;
+ background:linear-gradient(
+  135deg,
+  var(--accent),
+  var(--accent2)
+ );
+ font-size:35px;
 }
 
 /* =========================
    MODAL
 ========================= */
 
-.modal {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,.45);
-    display: none;
-    place-items: center;
-    z-index: 500;
+#modal{
+ position:fixed;
+ inset:0;
+ z-index:6000;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:rgba(0,0,0,.58);
 }
 
-.modal.open {
-    display: grid;
+.modalBox{
+ width:min(490px,90%);
+ padding:23px;
+ background:#111a2c;
+ border:1px solid var(--border);
+ border-radius:19px;
+ box-shadow:var(--shadow);
 }
 
-.modal-box {
-    width: min(390px,90vw);
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 17px;
-    padding: 20px;
-    box-shadow: var(--shadow);
+.modalBox p{
+ margin:12px 0 18px;
+ color:var(--muted);
+ line-height:1.5;
 }
 
-.modal-box h3 {
-    margin-bottom: 12px;
-}
+@media(max-width:700px){
 
-.modal-box input {
-    width: 100%;
-    padding: 11px;
-    background: var(--panel2);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    outline: none;
-}
+ .grid2,
+ .grid3{
+  grid-template-columns:1fr;
+ }
 
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    margin-top: 15px;
-}
+ .window{
+  width:calc(100vw - 20px);
+  height:calc(100vh - 90px);
+ }
 
-/* =========================
-   RESPONSIVE
-========================= */
+ #start,
+ #quick,
+ #notifications{
+  width:calc(100vw - 30px);
+ }
 
-@media(max-width:600px) {
+ .desktopIcons{
+  grid-template-columns:repeat(2,76px);
+  left:10px;
+ }
 
-    .desktop-icons {
-        grid-template-columns: repeat(3,75px);
-        gap: 8px;
-        left: 8px;
-        top: 70px;
-    }
-
-    .desktop-icon {
-        width: 70px;
-    }
-
-    .desktop-icon .icon {
-        font-size: 28px;
-    }
-
-    .dock {
-        bottom: 8px;
-        max-width: calc(100vw - 15px);
-        overflow-x: auto;
-    }
-
-    .dock button {
-        flex-shrink: 0;
-    }
-
-    .status span:not(#clock) {
-        display: none;
-    }
-
-    .notes-list {
-        width: 120px;
-    }
 }
 </style>
 </head>
 
 <body>
 
-<div id="desktop">
+<!-- =====================================================
+     LOGO SVG
+===================================================== -->
 
-    <div class="wallpaper"></div>
-    <div class="logo-watermark">NEXOFA</div>
+<svg style="display:none">
 
-    <!-- BARRA SUPERIOR -->
-    <header class="topbar">
+ <symbol
+  id="nexofa-logo"
+  viewBox="0 0 100 100"
+ >
 
-        <div class="brand">
-            <div class="nexofa-symbol">N</div>
-            <span>Nexofa OS</span>
-        </div>
+  <defs>
 
-        <div class="status">
-            <span>● Sistema activo</span>
-            <span id="clock">00:00</span>
-            <button onclick="toggleNotifications()">🔔</button>
-        </div>
+   <linearGradient
+    id="nexoGradient"
+    x1="0"
+    y1="0"
+    x2="1"
+    y2="1"
+   >
 
-    </header>
+    <stop
+     offset="0%"
+     stop-color="#657cff"
+    />
 
+    <stop
+     offset="55%"
+     stop-color="#8b5cf6"
+    />
 
-    <!-- ICONOS DEL ESCRITORIO -->
+    <stop
+     offset="100%"
+     stop-color="#43d9ff"
+    />
 
-    <div class="desktop-icons">
+   </linearGradient>
 
-        <div class="desktop-icon" onclick="openWindow('filesWindow')">
-            <div class="icon">📁</div>
-            <span>Archivos</span>
-        </div>
+  </defs>
 
-        <div class="desktop-icon" onclick="openWindow('notesWindow')">
-            <div class="icon">📝</div>
-            <span>Notas</span>
-        </div>
+  <path
+   d="M50 7 L87 28 L87 72 L50 93 L13 72 L13 28 Z"
+   fill="none"
+   stroke="url(#nexoGradient)"
+   stroke-width="7"
+   stroke-linejoin="round"
+  />
 
-        <div class="desktop-icon" onclick="openWindow('calculatorWindow')">
-            <div class="icon">🧮</div>
-            <span>Calculadora</span>
-        </div>
+  <path
+   d="M30 67 L30 34 L70 66 L70 33"
+   fill="none"
+   stroke="url(#nexoGradient)"
+   stroke-width="7"
+   stroke-linecap="round"
+   stroke-linejoin="round"
+  />
 
-        <div class="desktop-icon" onclick="openWindow('aiWindow')">
-            <div class="icon">🧠</div>
-            <span>Nexo IA</span>
-        </div>
+ </symbol>
 
-        <div class="desktop-icon" onclick="openWindow('settingsWindow')">
-            <div class="icon">⚙️</div>
-            <span>Configuración</span>
-        </div>
+</svg>
 
-    </div>
 
+<!-- =====================================================
+     BOOT
+===================================================== -->
 
-    <!-- =========================
-         MENÚ START
-    ========================= -->
+<div id="boot">
 
-    <div id="startMenu" class="start-menu">
+ <div class="bootBox">
 
-        <input
-            id="appSearch"
-            class="search-box"
-            placeholder="Buscar aplicaciones..."
-            oninput="filterApps()"
-        >
+  <div class="bootBrand">
 
-        <div class="menu-section">
+   <div class="logoMark">
+    <svg>
+     <use href="#nexofa-logo"></use>
+    </svg>
+   </div>
 
-            <div class="menu-section-title">
-                Aplicaciones
-            </div>
+   <h1>
+    Nexo<span>fa</span>
+   </h1>
 
-            <div class="app-grid">
+  </div>
 
-                <button class="app-button" data-name="archivos"
-                    onclick="openWindow('filesWindow'); closeStart()">
-                    <div>📁</div>
-                    <span>Archivos</span>
-                </button>
+  <p class="muted" style="margin-bottom:22px">
+   Nexofa OS 1.4 · Unified Experience
+  </p>
 
-                <button class="app-button" data-name="notas"
-                    onclick="openWindow('notesWindow'); closeStart()">
-                    <div>📝</div>
-                    <span>Notas</span>
-                </button>
+  <div id="bootLines">
 
-                <button class="app-button" data-name="calculadora"
-                    onclick="openWindow('calculatorWindow'); closeStart()">
-                    <div>🧮</div>
-                    <span>Calculadora</span>
-                </button>
+   <div class="bootLine" data-s="core">
+    ○ Nexofa Core
+   </div>
 
-                <button class="app-button" data-name="nexo ia inteligencia"
-                    onclick="openWindow('aiWindow'); closeStart()">
-                    <div>🧠</div>
-                    <span>Nexo IA</span>
-                </button>
+   <div class="bootLine" data-s="security">
+    ○ Security Manager
+   </div>
 
-                <button class="app-button" data-name="configuracion ajustes"
-                    onclick="openWindow('settingsWindow'); closeStart()">
-                    <div>⚙️</div>
-                    <span>Ajustes</span>
-                </button>
+   <div class="bootLine" data-s="storage">
+    ○ Virtual File System
+   </div>
 
-                <button class="app-button" data-name="acerca de nexofa"
-                    onclick="openWindow('aboutWindow'); closeStart()">
-                    <div>ℹ️</div>
-                    <span>Nexofa</span>
-                </button>
+   <div class="bootLine" data-s="services">
+    ○ System Services
+   </div>
 
-            </div>
+   <div class="bootLine" data-s="apps">
+    ○ Application Registry
+   </div>
 
-        </div>
+   <div class="bootLine" data-s="session">
+    ○ User Session
+   </div>
 
-    </div>
+   <div class="bootLine" data-s="interface">
+    ○ Nexofa Interface
+   </div>
 
+  </div>
 
-    <!-- =========================
-         NOTIFICACIONES
-    ========================= -->
+  <div class="progress">
+   <div id="progressBar" class="progressBar"></div>
+  </div>
 
-    <div id="notificationPanel" class="notification-panel">
-
-        <h3>Notificaciones</h3>
-
-        <div class="notification">
-            <strong>Nexofa OS</strong>
-            Sistema iniciado correctamente.
-            <small>Ahora</small>
-        </div>
-
-        <div class="notification">
-            <strong>Almacenamiento</strong>
-            Tus archivos se guardan localmente.
-            <small>Información</small>
-        </div>
-
-        <div class="notification">
-            <strong>Nexo IA</strong>
-            Módulo de inteligencia preparado.
-            <small>Sistema</small>
-        </div>
-
-    </div>
-
-
-    <!-- =========================
-         VENTANA ARCHIVOS
-    ========================= -->
-
-    <section id="filesWindow" class="window">
-
-        <div class="window-header">
-
-            <div class="window-title">
-                📁 Archivos
-            </div>
-
-            <div class="window-controls">
-                <button onclick="minimizeWindow('filesWindow')">—</button>
-                <button class="close" onclick="closeWindow('filesWindow')">×</button>
-            </div>
-
-        </div>
-
-        <div class="window-body">
-
-            <div class="file-toolbar">
-
-                <button class="action-btn" onclick="createFolder()">
-                    📁 Nueva carpeta
-                </button>
-
-                <button class="action-btn" onclick="createFile()">
-                    📄 Nuevo archivo
-                </button>
-
-                <button class="action-btn" onclick="goHome()">
-                    🏠 Inicio
-                </button>
-
-            </div>
-
-            <div id="filePath" class="file-path">
-                /Inicio
-            </div>
-
-            <div id="fileGrid" class="file-grid"></div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         VENTANA NOTAS
-    ========================= -->
-
-    <section id="notesWindow" class="window">
-
-        <div class="window-header">
-
-            <div class="window-title">
-                📝 Notas
-            </div>
-
-            <div class="window-controls">
-                <button onclick="minimizeWindow('notesWindow')">—</button>
-                <button class="close" onclick="closeWindow('notesWindow')">×</button>
-            </div>
-
-        </div>
-
-        <div class="window-body">
-
-            <div class="notes-layout">
-
-                <div class="notes-list">
-
-                    <button
-                        class="action-btn"
-                        style="width:100%;margin-bottom:10px"
-                        onclick="newNote()">
-                        + Nota
-                    </button>
-
-                    <div id="notesList"></div>
-
-                </div>
-
-                <div class="note-editor">
-
-                    <input
-                        id="noteTitle"
-                        class="note-title"
-                        placeholder="Título"
-                        oninput="saveCurrentNote()"
-                    >
-
-                    <textarea
-                        id="noteContent"
-                        class="note-content"
-                        placeholder="Escribe aquí..."
-                        oninput="saveCurrentNote()"
-                    ></textarea>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         CALCULADORA
-    ========================= -->
-
-    <section id="calculatorWindow" class="window">
-
-        <div class="window-header">
-
-            <div class="window-title">
-                🧮 Calculadora
-            </div>
-
-            <div class="window-controls">
-                <button onclick="minimizeWindow('calculatorWindow')">—</button>
-                <button class="close" onclick="closeWindow('calculatorWindow')">×</button>
-            </div>
-
-        </div>
-
-        <div class="window-body">
-
-            <div class="calculator">
-
-                <input
-                    id="calcDisplay"
-                    class="calc-display"
-                    readonly
-                    value="0"
-                >
-
-                <div class="calc-buttons">
-
-                    <button onclick="calcClear()">C</button>
-                    <button onclick="calcBack()">⌫</button>
-                    <button onclick="calcInput('(')">(</button>
-                    <button onclick="calcInput(')')">)</button>
-
-                    <button onclick="calcInput('7')">7</button>
-                    <button onclick="calcInput('8')">8</button>
-                    <button onclick="calcInput('9')">9</button>
-                    <button onclick="calcInput('/')">÷</button>
-
-                    <button onclick="calcInput('4')">4</button>
-                    <button onclick="calcInput('5')">5</button>
-                    <button onclick="calcInput('6')">6</button>
-                    <button onclick="calcInput('*')">×</button>
-
-                    <button onclick="calcInput('1')">1</button>
-                    <button onclick="calcInput('2')">2</button>
-                    <button onclick="calcInput('3')">3</button>
-                    <button onclick="calcInput('-')">−</button>
-
-                    <button onclick="calcInput('0')">0</button>
-                    <button onclick="calcInput('.')">.</button>
-                    <button onclick="calculate()">=</button>
-                    <button onclick="calcInput('+')">+</button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         NEXO IA
-    ========================= -->
-
-    <section id="aiWindow" class="window">
-
-        <div class="window-header">
-
-            <div class="window-title">
-                🧠 Nexo IA
-            </div>
-
-            <div class="window-controls">
-                <button onclick="minimizeWindow('aiWindow')">—</button>
-                <button class="close" onclick="closeWindow('aiWindow')">×</button>
-            </div>
-
-        </div>
-
-        <div class="window-body">
-
-            <div class="ai-chat">
-
-                <div id="chatMessages" class="chat-messages">
-
-                    <div class="message ai">
-                        Hola. Soy Nexo IA, el asistente integrado de Nexofa OS 1.0.
-                    </div>
-
-                    <div class="message ai">
-                        Esta versión utiliza respuestas locales de prueba. La conexión con un modelo de IA real se podrá integrar posteriormente.
-                    </div>
-
-                </div>
-
-                <div class="chat-input">
-
-                    <input
-                        id="chatInput"
-                        placeholder="Escribe un mensaje..."
-                        onkeydown="if(event.key==='Enter')sendMessage()"
-                    >
-
-                    <button onclick="sendMessage()">
-                        Enviar
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         CONFIGURACIÓN
-    ========================= -->
-
-    <section id="settingsWindow" class="window">
-
-        <div class="window-header">
-
-            <div class="window-title">
-                ⚙️ Configuración
-            </div>
-
-            <div class="window-controls">
-                <button onclick="minimizeWindow('settingsWindow')">—</button>
-                <button class="close" onclick="closeWindow('settingsWindow')">×</button>
-            </div>
-
-        </div>
-
-        <div class="window-body">
-
-            <div class="settings">
-
-                <div class="settings-card">
-
-                    <h3>Apariencia</h3>
-
-                    <p>
-                        Cambia entre el modo oscuro y el modo claro.
-                    </p>
-
-                    <button
-                        id="themeToggle"
-                        class="toggle"
-                        onclick="toggleTheme()">
-                    </button>
-
-                </div>
-
-
-                <div class="settings-card">
-
-                    <h3>Sistema</h3>
-
-                    <p>
-                        Nexofa OS 1.0 — versión experimental.
-                    </p>
-
-                    <p>
-                        Motor: Nexofa Core
-                    </p>
-
-                    <p>
-                        Estado: Operativo
-                    </p>
-
-                </div>
-
-
-                <div class="settings-card">
-
-                    <h3>Almacenamiento</h3>
-
-                    <p>
-                        Los datos de esta prueba se almacenan en el navegador mediante localStorage.
-                    </p>
-
-                    <button
-                        class="action-btn"
-                        onclick="clearSystemData()">
-                        Restablecer datos
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         ACERCA DE
-    ========================= -->
-
-    <section id="aboutWindow" class="window">
-
-        <div class="window-header">
-
-            <div class="window-title">
-                ℹ️ Acerca de Nexofa
-            </div>
-
-            <div class="window-controls">
-                <button onclick="minimizeWindow('aboutWindow')">—</button>
-                <button class="close" onclick="closeWindow('aboutWindow')">×</button>
-            </div>
-
-        </div>
-
-        <div class="window-body">
-
-            <div class="about">
-
-                <div>
-
-                    <div class="about-logo">
-                        N
-                    </div>
-
-                    <h1>Nexofa OS</h1>
-
-                    <p>
-                        Un sistema operativo experimental
-                        construido paso a paso.
-                    </p>
-
-                    <div class="version">
-                        Nexofa OS 1.0 TEST
-                    </div>
-
-                    <p style="margin-top:20px">
-                        Esta versión es una prueba funcional.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         DOCK
-    ========================= -->
-
-    <nav class="dock">
-
-        <button onclick="toggleStart()" title="Inicio">
-            ⬡
-        </button>
-
-        <button onclick="openWindow('filesWindow')" title="Archivos">
-            📁
-        </button>
-
-        <button onclick="openWindow('notesWindow')" title="Notas">
-            📝
-        </button>
-
-        <button onclick="openWindow('calculatorWindow')" title="Calculadora">
-            🧮
-        </button>
-
-        <button onclick="openWindow('aiWindow')" title="Nexo IA">
-            🧠
-        </button>
-
-        <button onclick="openWindow('settingsWindow')" title="Configuración">
-            ⚙️
-        </button>
-
-    </nav>
-
-
-    <!-- =========================
-         MODAL CREACIÓN
-    ========================= -->
-
-    <div id="modal" class="modal">
-
-        <div class="modal-box">
-
-            <h3 id="modalTitle">
-                Crear elemento
-            </h3>
-
-            <input
-                id="modalInput"
-                placeholder="Nombre..."
-            >
-
-            <div class="modal-actions">
-
-                <button
-                    class="action-btn"
-                    onclick="closeModal()">
-                    Cancelar
-                </button>
-
-                <button
-                    class="action-btn"
-                    onclick="confirmModal()">
-                    Crear
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
+ </div>
 
 </div>
 
 
-<script>
+<!-- =====================================================
+     LOCK
+===================================================== -->
 
-/* =========================================================
-   NEXOFA OS 1.0
-   MOTOR PRINCIPAL
-========================================================= */
+<div id="lock" class="hidden">
 
-const Nexofa = {
+ <div>
 
-    version: "1.0 TEST",
+  <div class="avatar" id="lockAvatar">
+   A
+  </div>
 
-    init() {
+  <h1 id="lockName">
+   Abiel
+  </h1>
 
-        loadTheme();
-        initializeFiles();
-        initializeNotes();
-        renderFiles();
-        renderNotes();
-        updateClock();
+  <p
+   class="muted"
+   id="lockRole"
+   style="margin:5px 0 18px"
+  >
+   Propietario
+  </p>
 
-        setInterval(updateClock, 1000);
+  <button
+   class="btn primary"
+   onclick="unlock()"
+  >
+   Desbloquear Nexofa
+  </button>
 
-        console.log("Nexofa OS 1.0 iniciado.");
+ </div>
 
-    }
+</div>
 
-};
 
+<!-- =====================================================
+     DESKTOP
+===================================================== -->
 
-/* =========================================================
-   RELOJ
-========================================================= */
+<div id="desktop">
+
+ <div id="topbar">
+
+  <div style="display:flex;align-items:center;gap:5px">
+
+   <button
+    class="top"
+    onclick="toggleStart()"
+   >
+
+    <div
+     class="logoMark"
+     style="width:27px;height:27px"
+    >
 
-function updateClock() {
+     <svg>
+      <use href="#nexofa-logo"></use>
+     </svg>
 
-    const now = new Date();
+    </div>
+
+    <span class="brandName">
+     Nexo<span>fa</span>
+    </span>
 
-    const hours = String(now.getHours()).padStart(2,"0");
-    const minutes = String(now.getMinutes()).padStart(2,"0");
+   </button>
 
-    document.getElementById("clock").textContent =
-        `${hours}:${minutes}`;
-
-}
-
-
-/* =========================================================
-   VENTANAS
-========================================================= */
-
-function openWindow(id) {
-
-    closeAllWindows();
-
-    const win = document.getElementById(id);
-
-    if(win) {
-        win.classList.add("active");
-    }
-
-}
-
-function closeWindow(id) {
-
-    const win = document.getElementById(id);
-
-    if(win) {
-        win.classList.remove("active");
-    }
-
-}
-
-function minimizeWindow(id) {
-
-    closeWindow(id);
-
-}
-
-function closeAllWindows() {
-
-    document
-        .querySelectorAll(".window")
-        .forEach(win => win.classList.remove("active"));
-
-}
-
-
-/* =========================================================
-   MENÚ START
-========================================================= */
-
-function toggleStart() {
-
-    document
-        .getElementById("startMenu")
-        .classList.toggle("open");
-
-}
-
-function closeStart() {
-
-    document
-        .getElementById("startMenu")
-        .classList.remove("open");
-
-}
-
-function filterApps() {
-
-    const search =
-        document
-        .getElementById("appSearch")
-        .value
-        .toLowerCase();
-
-    document
-        .querySelectorAll(".app-button")
-        .forEach(button => {
-
-            const name =
-                button.dataset.name.toLowerCase();
-
-            button.style.display =
-                name.includes(search)
-                ? ""
-                : "none";
-
-        });
-
-}
-
-
-/* =========================================================
-   NOTIFICACIONES
-========================================================= */
-
-function toggleNotifications() {
-
-    document
-        .getElementById("notificationPanel")
-        .classList.toggle("open");
-
-}
-
-
-/* =========================================================
-   ARCHIVOS Y CARPETAS
-========================================================= */
-
-let fileSystem = null;
-let currentPath = [];
-
-function initializeFiles() {
-
-    const saved =
-        localStorage.getItem("nexofa_files");
-
-    if(saved) {
-
-        try {
-
-            fileSystem = JSON.parse(saved);
-
-        } catch {
-
-            createDefaultFileSystem();
-
-        }
-
-    } else {
-
-        createDefaultFileSystem();
-
-    }
-
-}
-
-function createDefaultFileSystem() {
-
-    fileSystem = {
-
-        type: "folder",
-
-        name: "Inicio",
-
-        children: [
-
-            {
-                type: "folder",
-                name: "Documentos",
-                children: []
-            },
-
-            {
-                type: "folder",
-                name: "Descargas",
-                children: []
-            },
-
-            {
-                type: "folder",
-                name: "Imágenes",
-                children: []
-            },
-
-            {
-                type: "file",
-                name: "Bienvenido.txt",
-                content:
-                    "Bienvenido a Nexofa OS 1.0."
-            }
-
-        ]
-
-    };
-
-    saveFileSystem();
-
-}
-
-function saveFileSystem() {
-
-    localStorage.setItem(
-        "nexofa_files",
-        JSON.stringify(fileSystem)
-    );
-
-}
-
-function getCurrentFolder() {
-
-    let folder = fileSystem;
-
-    for(const index of currentPath) {
-
-        folder = folder.children[index];
-
-    }
-
-    return folder;
-
-}
-
-function renderFiles() {
-
-    const folder = getCurrentFolder();
-
-    const grid =
-        document.getElementById("fileGrid");
-
-    const path =
-        document.getElementById("filePath");
-
-    path.textContent =
-        "/Inicio" +
-        (currentPath.length
-            ? " / " + currentPath
-                .map(i => getFolderName(i))
-                .join(" / ")
-            : "");
-
-    grid.innerHTML = "";
-
-    if(!folder.children.length) {
-
-        grid.innerHTML =
-            `<div style="color:var(--muted);padding:20px">
-                Esta carpeta está vacía.
-             </div>`;
-
-        return;
-
-    }
-
-    folder.children.forEach((item,index) => {
-
-        const element =
-            document.createElement("div");
-
-        element.className = "file-item";
-
-        const icon =
-            item.type === "folder"
-            ? "📁"
-            : "📄";
-
-        element.innerHTML = `
-
-            <button
-                class="file-delete"
-                onclick="event.stopPropagation();deleteItem(${index})">
-                ×
-            </button>
-
-            <div class="file-icon">
-                ${icon}
-            </div>
-
-            <div class="file-name">
-                ${escapeHTML(item.name)}
-            </div>
-
-        `;
-
-        element.onclick = () => {
-
-            if(item.type === "folder") {
-
-                currentPath.push(index);
-
-                renderFiles();
-
-            } else {
-
-                alert(
-                    item.content ||
-                    "Archivo vacío."
-                );
-
-            }
-
-        };
-
-        grid.appendChild(element);
-
-    });
-
-}
-
-function getFolderName(index) {
-
-    let folder = fileSystem;
-
-    for(let i=0;i<currentPath.length;i++) {
-
-        if(i === currentPath.length - 1) {
-
-            return folder.children[index].name;
-
-        }
-
-        folder = folder.children[currentPath[i]];
-
-    }
-
-    return "";
-
-}
-
-function goHome() {
-
-    currentPath = [];
-
-    renderFiles();
-
-}
-
-function createFolder() {
-
-    showModal(
-        "Nueva carpeta",
-        "Nombre de la carpeta",
-        "folder"
-    );
-
-}
-
-function createFile() {
-
-    showModal(
-        "Nuevo archivo",
-        "Nombre del archivo",
-        "file"
-    );
-
-}
-
-let modalAction = null;
-
-function showModal(title,placeholder,action) {
-
-    modalAction = action;
-
-    document.getElementById("modalTitle").textContent =
-        title;
-
-    document.getElementById("modalInput").placeholder =
-        placeholder;
-
-    document.getElementById("modalInput").value = "";
-
-    document.getElementById("modal").classList.add("open");
-
-    setTimeout(() => {
-
-        document
-            .getElementById("modalInput")
-            .focus();
-
-    },100);
-
-}
-
-function closeModal() {
-
-    document
-        .getElementById("modal")
-        .classList.remove("open");
-
-}
-
-function confirmModal() {
-
-    const input =
-        document.getElementById("modalInput");
-
-    const name =
-        input.value.trim();
-
-    if(!name) {
-
-        alert("Escribe un nombre.");
-
-        return;
-
-    }
-
-    const folder = getCurrentFolder();
-
-    if(folder.children.some(
-        item => item.name.toLowerCase() === name.toLowerCase()
-    )) {
-
-        alert("Ya existe un elemento con ese nombre.");
-
-        return;
-
-    }
-
-    if(modalAction === "folder") {
-
-        folder.children.push({
-
-            type: "folder",
-
-            name: name,
-
-            children: []
-
-        });
-
-    }
-
-    if(modalAction === "file") {
-
-        folder.children.push({
-
-            type: "file",
-
-            name: name,
-
-            content: ""
-
-        });
-
-    }
-
-    saveFileSystem();
-
-    renderFiles();
-
-    closeModal();
-
-}
-
-function deleteItem(index) {
-
-    const folder = getCurrentFolder();
-
-    const item = folder.children[index];
-
-    if(!confirm(
-        `¿Eliminar "${item.name}"?`
-    )) {
-
-        return;
-
-    }
-
-    folder.children.splice(index,1);
-
-    saveFileSystem();
-
-    renderFiles();
-
-}
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHTML(text) {
-
-    return text
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-
-}
-
-
-/* =========================================================
-   NOTAS
-========================================================= */
-
-let notes = [];
-let currentNote = null;
-
-function initializeNotes() {
-
-    const saved =
-        localStorage.getItem("nexofa_notes");
-
-    if(saved) {
-
-        try {
-
-            notes = JSON.parse(saved);
-
-        } catch {
-
-            notes = [];
-
-        }
-
-    }
-
-    if(notes.length === 0) {
-
-        notes.push({
-
-            id: Date.now(),
-
-            title: "Bienvenido",
-
-            content:
-                "Esta es la aplicación de notas de Nexofa OS 1.0."
-
-        });
-
-    }
-
-    currentNote = notes[0].id;
-
-}
-
-function saveNotes() {
-
-    localStorage.setItem(
-        "nexofa_notes",
-        JSON.stringify(notes)
-    );
-
-}
-
-function renderNotes() {
-
-    const list =
-        document.getElementById("notesList");
-
-    list.innerHTML = "";
-
-    notes.forEach(note => {
-
-        const item =
-            document.createElement("div");
-
-        item.className =
-            "note-list-item" +
-            (note.id === currentNote
-                ? " selected"
-                : "");
-
-        item.textContent =
-            note.title || "Sin título";
-
-        item.onclick = () => {
-
-            currentNote = note.id;
-
-            renderNotes();
-
-        };
-
-        list.appendChild(item);
-
-    });
-
-    const note =
-        notes.find(n => n.id === currentNote);
-
-    if(note) {
-
-        document.getElementById("noteTitle").value =
-            note.title;
-
-        document.getElementById("noteContent").value =
-            note.content;
-
-    }
-
-}
-
-function newNote() {
-
-    const note = {
-
-        id: Date.now(),
-
-        title: "Nueva nota",
-
-        content: ""
-
-    };
-
-    notes.unshift(note);
-
-    currentNote = note.id;
-
-    saveNotes();
-
-    renderNotes();
-
-}
-
-function saveCurrentNote() {
-
-    const note =
-        notes.find(n => n.id === currentNote);
-
-    if(!note) return;
-
-    note.title =
-        document.getElementById("noteTitle").value;
-
-    note.content =
-        document.getElementById("noteContent").value;
-
-    saveNotes();
-
-    renderNotes();
-
-}
-
-
-/* =========================================================
-   CALCULADORA
-========================================================= */
-
-function calcInput(value) {
-
-    const display =
-        document.getElementById("calcDisplay");
-
-    if(display.value === "0") {
-
-        display.value = value;
-
-    } else {
-
-        display.value += value;
-
-    }
-
-}
-
-function calcClear() {
-
-    document.getElementById("calcDisplay").value =
-        "0";
-
-}
-
-function calcBack() {
-
-    const display =
-        document.getElementById("calcDisplay");
-
-    display.value =
-        display.value.length > 1
-        ? display.value.slice(0,-1)
-        : "0";
-
-}
-
-function calculate() {
-
-    const display =
-        document.getElementById("calcDisplay");
-
-    try {
-
-        const expression =
-            display.value;
-
-        if(!/^[0-9+\-*/().\s]+$/.test(expression)) {
-
-            throw new Error();
-
-        }
-
-        const result =
-            Function(
-                `"use strict"; return (${expression})`
-            )();
-
-        display.value =
-            Number.isFinite(result)
-            ? result
-            : "Error";
-
-    } catch {
-
-        display.value = "Error";
-
-    }
-
-}
-
-
-/* =========================================================
-   TEMA
-========================================================= */
-
-function loadTheme() {
-
-    const theme =
-        localStorage.getItem("nexofa_theme");
-
-    if(theme === "light") {
-
-        document.body.classList.add("light");
-
-    }
-
-}
-
-function toggleTheme() {
-
-    document.body.classList.toggle("light");
-
-    const light =
-        document.body.classList.contains("light");
-
-    localStorage.setItem(
-        "nexofa_theme",
-        light ? "light" : "dark"
-    );
-
-}
-
-
-/* =========================================================
-   NEXO IA LOCAL DE PRUEBA
-========================================================= */
-
-function sendMessage() {
-
-    const input =
-        document.getElementById("chatInput");
-
-    const text =
-        input.value.trim();
-
-    if(!text) return;
-
-    addChatMessage(text,"user");
-
-    input.value = "";
-
-    setTimeout(() => {
-
-        const response =
-            localAI(text);
-
-        addChatMessage(response,"ai");
-
-    },400);
-
-}
-
-function addChatMessage(text,type) {
-
-    const messages =
-        document.getElementById("chatMessages");
-
-    const message =
-        document.createElement("div");
-
-    message.className =
-        `message ${type}`;
-
-    message.textContent =
-        text;
-
-    messages.appendChild(message);
-
-    messages.scrollTop =
-        messages.scrollHeight;
-
-}
-
-function localAI(text) {
-
-    const lower =
-        text.toLowerCase();
-
-    if(
-        lower.includes("hola") ||
-        lower.includes("hey")
-    ) {
-
-        return "Hola. Soy Nexo IA, el asistente local de prueba de Nexofa OS.";
-
-    }
-
-    if(
-        lower.includes("nexofa")
-    ) {
-
-        return "Nexofa OS 1.0 es la versión experimental que estás ejecutando ahora mismo.";
-
-    }
-
-    if(
-        lower.includes("hora")
-    ) {
-
-        return "La hora actual del sistema es " +
-            document.getElementById("clock").textContent + ".";
-
-    }
-
-    if(
-        lower.includes("ayuda")
-    ) {
-
-        return "Puedo responder algunas preguntas básicas en esta prueba. La conexión con una IA real se podrá implementar posteriormente.";
-
-    }
-
-    if(
-        lower.includes("quien eres") ||
-        lower.includes("qué eres") ||
-        lower.includes("que eres")
-    ) {
-
-        return "Soy Nexo IA, el módulo de inteligencia de Nexofa OS.";
-
-    }
-
-    return "He recibido tu mensaje. Esta versión de Nexo IA todavía funciona con respuestas locales de prueba.";
-
-}
-
-
-/* =========================================================
-   RESTABLECER SISTEMA
-========================================================= */
-
-function clearSystemData() {
-
-    const confirmation =
-        confirm(
-            "Esto eliminará las carpetas, archivos y notas guardados en esta prueba. ¿Continuar?"
-        );
-
-    if(!confirmation) return;
-
-    localStorage.removeItem("nexofa_files");
-    localStorage.removeItem("nexofa_notes");
-
-    createDefaultFileSystem();
-
-    notes = [];
-
-    initializeNotes();
-
-    currentPath = [];
-
-    renderFiles();
-
-    renderNotes();
-
-    alert(
-        "Nexofa OS 1.0 ha restablecido sus datos."
-    );
-
-}
-
-
-/* =========================================================
-   ATAJOS DE TECLADO
-========================================================= */
-
-document.addEventListener("keydown", event => {
-
-    if(event.key === "Escape") {
-
-        closeStart();
-
-        document
-            .getElementById("notificationPanel")
-            .classList.remove("open");
-
-        closeModal();
-
-    }
-
-    if(
-        event.ctrlKey &&
-        event.key.toLowerCase() === "k"
-    ) {
-
-        event.preventDefault();
-
-        toggleStart();
-
-        document
-            .getElementById("appSearch")
-            .focus();
-
-    }
-
-});
-
-
-/* =========================================================
-   CLIC FUERA
-========================================================= */
-
-document.addEventListener("click", event => {
-
-    const start =
-        document.getElementById("startMenu");
-
-    const dock =
-        document.querySelector(".dock");
-
-    if(
-        start.classList.contains("open") &&
-        !start.contains(event.target) &&
-        !dock.contains(event.target)
-    ) {
-
-        closeStart();
-
-    }
-
-});
-
-
-/* =========================================================
-   INICIAR NEXOFA
-========================================================= */
-
-Nexofa.init();
-
-</script>
-
-</body>
-</html>
+   <button
+    class="top"
+    onclick="openApp('security')"
+   >
+    🛡️
+   </button>
+
+  </div>
+
+  <div style="display:flex;align-items:center">
+
+   <button
+    class="top"
+    onclick="toggleNotifications()"
+   >
+    🔔
+   </button>
+
+   <button
+    class="top"
+    onclick="toggleQuick()"
+   >
+    ⚙
+   </button>
+
+   <span id="clock"></span>
+
+  </div>
+
+ </div>
+
+
+ <!-- DESKTOP ICONS -->
+
+ <div class="desktopIcons">
+
+  <div
+   class="desktopIcon"
+   onclick="openApp('files')"
+  >
+   <div class="iconBox">📁</div>
+   <span>Archivos</span>
+  </div>
+
+  <div
+   class="desktopIcon"
+   onclick="openApp('notes')"
+  >
+   <div class="iconBox">📝</div>
+   <span>Notas</span>
+  </div>
+
+  <div
+   class="desktopIcon"
+   onclick="openApp('calculator')"
+  >
+   <div class="iconBox">🧮</div>
+   <span>Calculadora</span>
+  </div>
+
+  <div
+   class="desktopIcon"
+   onclick="openApp('nexo')"
+  >
+   <div class="iconBox">✦</div>
+   <span>Nexo IA</span>
+  </div>
+
+  <div
+   class="desktopIcon"
+   onclick="openApp('apps')"
+  >
+   <div class="iconBox">📦</div>
+   <span>Aplicaciones</span>
+  </div>
+
+  <div
+   class="desktopIcon"
+   onclick="openApp('system')"
+  >
+   <div class="iconBox">📊</div>
+   <span>Sistema</span>
+  </div>
+
+ </div>
+
+
+ <!-- START -->
+
+ <div
+  id="start"
+  class="panel hidden"
+ >
+
+  <div class="brand">
+
+   <div
+    class="logoMark"
+    style="width:32px;height:32px"
+   >
+    <svg>
+     <use href="#nexofa-logo"></use>
+    </svg>
+   </div>
+
+   <span class="panelTitle">
+    Nexo<span style="color:var(--accent)">fa</span>
+   </span>
+
+  </div>
+
+  <input
+   id="appSearch"
+   class="search"
+   placeholder="Buscar aplicaciones..."
+   oninput="filterApps()"
+  >
+
+  <div
+   id="appList"
+   class="appList"
+  ></div>
+
+  <div
+   class="btnRow"
+   style="margin-top:13px"
+  >
+
+   <button
+    class="btn"
+    onclick="lockSystem()"
+   >
+    🔒 Bloquear
+   </button>
+
+   <button
+    class="btn danger"
+    onclick="shutdown()"
+   >
+    ⏻ Apagar
+   </button>
+
+  </div>
+
+ </div>
+
+
+ <!-- QUICK -->
+
+ <div
+  id="quick"
+  class="panel hidden"
+ >
+
+  <h3>Centro de control</h3>
+
+  <div class="status">
+
+   <div class="row">
+    <span>Usuario</span>
+    <strong id="quickUser">
+     Abiel
+    </strong>
+   </div>
+
+   <div class="row">
+    <span>Rol</span>
+    <span id="quickRole">
+     Propietario
+    </span>
+   </div>
+
+   <div class="row">
+    <span>Core</span>
+    <span class="good">● Activo</span>
+   </div>
+
+   <div class="row">
+    <span>Storage</span>
+    <span class="good">● Montado</span>
+   </div>
+
+   <div class="row">
+    <span>Nexo IA</span>
+    <span class="good">● Local</span>
+   </div>
+
+  </div>
+
+  <div
+   class="btnRow"
+   style="margin-top:11px"
+  >
+
+   <button
+    class="btn"
+    onclick="openApp('settings')"
+   >
+    Configuración
+   </button>
+
+   <button
+    class="btn"
+    onclick="openApp('apps')"
+   >
+    Aplicaciones
+   </button>
+
+  </div>
+
+ </div>
+
+
+ <!-- NOTIFICATIONS -->
+
+ <div
+  id="notifications"
+  class="panel hidden"
+ >
+
+  <h3>Notificaciones</h3>
+
+  <div
+   id="notificationList"
+   style="margin-top:10px"
+  ></div>
+
+ </div>
+
+
+ <!-- WINDOWS -->
+
+ <div id="windows"></div>
+
+
+ <!-- DOCK -->
+
+ <div id="dock">
+
+  <button
+   class="dockBtn"
+   onclick="toggleStart()"
+  >
+   <div
+    class="logoMark"
+    style="width:29px;height:29px"
+   >
+    <svg>
+     <use href="#nexofa-logo"></use>
+    </svg>
+   </div>
+  </button>
+
+  <div class="dockSep"></div>
+
+  <button
+   class="dockBtn"
+   onclick="openApp('files')"
+  >
+   📁
+  </button>
+
+  <button
+   class="dockBtn"
+   onclick="openApp('notes')"
+  >
+   📝
+  </button>
+
+  <button
+   class="dockBtn"
+   onclick="openApp('nexo')"
+  >
+   ✦
+  </button>
+
+  <button
+   class="dockBtn"
+   onclick="openApp('apps')"
+  >
+   📦
+  </button>
+
+  <div class="dockSep"></div>
+
+  <button
+   class="dockBtn"
+   onclick="openApp('settings')"
+  >
+   ⚙
+  </button>
+
+ </div>
+
+</div>
+
+
+<!-- MODAL -->
+
+<div
+ id="modal"
+ class="hidden"
+>
+
+ <div class="modalBox">
+
+  <h2 id="modalTitle">
+   Nexofa
+  </h2>
+
+  <p id="modalText"></p>
+
+  <div
+   class="btnRow"
+   style="justify-content:flex-end"
+  >
+
+   <button
+    class="btn"
+    onclick="closeModal()"
+   >
+    Cerrar
+   </button>
+
+   <button
+    id="modalAction"
+ 
